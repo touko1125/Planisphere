@@ -26,9 +26,4 @@ public class GameManager : MonoBehaviour
     {
         
     }
-
-    public void Hoge()
-    {
-        Debug.Log("Hoge");
-    }
 }
