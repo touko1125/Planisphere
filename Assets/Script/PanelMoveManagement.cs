@@ -10,10 +10,13 @@ public class PanelMoveManagement : MonoBehaviour
     private Vector2[] previous_TapPosition=new Vector2[2];
     private Vector2[] current_TapPosition = new Vector2[2];
 
+    //パネルが回転するTweenをここにいれる
+    private Sequence panelRotateSequence;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        panelRotateSequence = DOTween.Sequence();
     }
 
     // Update is called once per frame
@@ -21,7 +24,7 @@ public class PanelMoveManagement : MonoBehaviour
     {
         if (InputManager.inputManager.tapinfo.is_tap)
         {
-            //Tabをタップし始めた位置と終了位置を取得
+            //Tabをタップし始めた位置を取得
             if (InputManager.inputManager.tapinfo.tap_Obj!=null&&InputManager.inputManager.tapinfo.tap_Obj.tag == "Tab")
             {
                 //タップしているかどうか
@@ -33,22 +36,40 @@ public class PanelMoveManagement : MonoBehaviour
                 RotateTab();
             }
         }
+        else
+        {
+
+            //リセット
+            for(int i=0;i<previous_TapPosition.Length;i++)
+            {
+                previous_TapPosition[i] = Vector2.zero;
+            }
+            for (int i = 0; i <current_TapPosition.Length; i++)
+            {
+                current_TapPosition[i] = Vector2.zero;
+            }
+        }
     }
 
     public void RotateTab()
     {
+        //タップ位置と直前のタップ位置の差分のベクトルを取る
         Vector2 differencePos = current_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)] - previous_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)];
 
-        Debug.Log(differencePos);
-
-        float angle = Mathf.Atan2(differencePos.x, differencePos.y) * Mathf.Rad2Deg;
+        //ベクトルの角度取得
+        float angle = (Mathf.Atan2(differencePos.x, differencePos.y) * Mathf.Rad2Deg/2);
 
         GameObject tabParent = InputManager.inputManager.tapinfo.tap_Obj.transform.parent.gameObject;
 
-        tabParent.transform.DOLocalRotateQuaternion(Quaternion.Euler
-            (tabParent.transform.localRotation.x,tabParent.transform.localRotation.y,tabParent.transform.localRotation.z+(angle/10f))
-            ,0.01f);
+        //角度分だけ回し続ける
+        panelRotateSequence.Append(tabParent.transform.DOLocalRotate(new Vector3(tabParent.transform.localEulerAngles.x,tabParent.transform.localEulerAngles.y,tabParent.transform.localEulerAngles.z-(angle/10f)),0.1f,RotateMode.FastBeyond360));
 
         previous_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)] = current_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)];
+
+        //再生中でなければ
+        if (AudioManager.audiomanager.AudioSources[0].isPlaying) return;
+
+        //効果音再生
+        AudioManager.audiomanager.PlayAudio(AudioManager.audiomanager.AudioClips[0], AudioManager.audiomanager.AudioSources[0], 0.9f, false);
     }
 }
