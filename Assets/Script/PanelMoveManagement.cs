@@ -13,6 +13,8 @@ public class PanelMoveManagement : MonoBehaviour
     //パネルが回転するTweenをここにいれる
     private Sequence panelRotateSequence;
 
+    public GameObject Beem;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,13 +40,12 @@ public class PanelMoveManagement : MonoBehaviour
         }
         else
         {
-
             //リセット
-            for(int i=0;i<previous_TapPosition.Length;i++)
+            for (int i = 0; i < previous_TapPosition.Length; i++)
             {
                 previous_TapPosition[i] = Vector2.zero;
             }
-            for (int i = 0; i <current_TapPosition.Length; i++)
+            for (int i = 0; i < current_TapPosition.Length; i++)
             {
                 current_TapPosition[i] = Vector2.zero;
             }
@@ -57,12 +58,12 @@ public class PanelMoveManagement : MonoBehaviour
         Vector2 differencePos = current_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)] - previous_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)];
 
         //ベクトルの角度取得
-        float angle = (Mathf.Atan2(differencePos.x, differencePos.y) * Mathf.Rad2Deg/2);
+        float angle = (Mathf.Atan2(differencePos.x, differencePos.y) * Mathf.Rad2Deg/4);
 
         GameObject tabParent = InputManager.inputManager.tapinfo.tap_Obj.transform.parent.gameObject;
 
         //角度分だけ回し続ける
-        panelRotateSequence.Append(tabParent.transform.DOLocalRotate(new Vector3(tabParent.transform.localEulerAngles.x,tabParent.transform.localEulerAngles.y,tabParent.transform.localEulerAngles.z-(angle/10f)),0.1f,RotateMode.FastBeyond360));
+        panelRotateSequence.Append(tabParent.transform.DOLocalRotate(new Vector3(tabParent.transform.localEulerAngles.x,tabParent.transform.localEulerAngles.y,tabParent.transform.localEulerAngles.z-(angle/10f)),0.07f,RotateMode.FastBeyond360));
 
         previous_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)] = current_TapPosition[int.Parse(InputManager.inputManager.tapinfo.tap_Obj.name)];
 
@@ -71,5 +72,8 @@ public class PanelMoveManagement : MonoBehaviour
 
         //効果音再生
         AudioManager.audiomanager.PlayAudio(AudioManager.audiomanager.AudioClips[0], AudioManager.audiomanager.AudioSources[0], 0.9f, false);
+
+        //ビームの描画
+        Beem.GetComponent<BeamComponent>().ShotBeam(InputManager.inputManager.tapinfo.tap_Obj);
     }
 }
