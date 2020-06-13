@@ -2,26 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : SingletonMonoBehaviour<AudioManager>
 {
     public GameObject[] AudioSourceObjects;
     public AudioSource[] AudioSources;
 
     public AudioClip[] AudioClips;
 
-    public static AudioManager audiomanager;
-
     private void Awake()
     {
-        if (audiomanager == null)
-        {
-            audiomanager = this;
-            DontDestroyOnLoad(this);
-        }
-        else
-        {
-            Destroy(this);
-        }
+
     }
 
     // Start is called before the first frame update
