@@ -10,11 +10,7 @@ public class BeamComponent : MonoBehaviour
 
     public Material lineMaterial;
 
-    private int currentIndex;
-
     private int differenceNum;
-
-    private float progress;
 
     private Vector3 distance;
 
@@ -34,6 +30,8 @@ public class BeamComponent : MonoBehaviour
 
     public void StartShotBeam(GameObject shotbeamTabObj)
     {
+        Debug.Log("bbbb");
+
         StartCoroutine(ShotBeam(shotbeamTabObj));
     }
 
@@ -59,6 +57,8 @@ public class BeamComponent : MonoBehaviour
 
         //太くする
         Physics.SphereCast(beemRay, 3.0f,out beemRaycast,rayerNum);
+
+
 
         //Scene画面に描画
         Debug.DrawRay(beemStartPos, beemEndPos, Color.white, 5.0f);
@@ -86,17 +86,11 @@ public class BeamComponent : MonoBehaviour
 
         for (int i = 0; i < differenceNum; i++)
         {
+            yield return new WaitForSeconds(0.02f);
             lineRenderer.positionCount=i+1;
 
             lineRenderer.SetPosition(i, beemStartPos + differenceLine);
             beemStartPos = beemStartPos + differenceLine;
-
-            yield return new WaitForSeconds(0.02f);
         }
-
-        //lineRenderer.SetPosition(0, beemStartPos);
-        //lineRenderer.SetPosition(1, beemEndPos);
-
-        //lineRenderer.SetColors(Color.white,Color.white);
     }
 }

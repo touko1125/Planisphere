@@ -8,6 +8,8 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
 {
     public Tap tapinfo;
 
+    private bool isPlayOnApplication;
+
     private void Awake()
     {
 
@@ -22,7 +24,7 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
     // Update is called once per frame
     void Update()
     {
-
+        ReceiveInput();
     }
 
     public void ReceiveInput()
@@ -33,8 +35,16 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
         //タップしている場所の座標を変換
         var tapObj = hit ? hit.collider.gameObject : null;
 
-        //実機かEditor上かの区別
-        if (Application.isEditor)
+        //タッチされているかのチェック
+        if (Input.touchCount > 0)
+        {
+            //一番最初は終わりの時だけfalseをいれるため
+            tapinfo = new Tap((Input.GetTouch(0).phase != TouchPhase.Ended), Input.GetTouch(0).position, Input.GetTouch(0).phase, tapObj);
+
+            isPlayOnApplication = true;
+        }
+
+        if (!isPlayOnApplication)
         {
             //押した瞬間
             if (Input.GetMouseButtonDown(0))
@@ -49,15 +59,6 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
             if (Input.GetMouseButtonUp(0))
             {
                 tapinfo = new Tap(false, Input.mousePosition, TouchPhase.Ended, tapObj);
-            }
-        }
-        else
-        {
-            //タッチされているかのチェック
-            if (Input.touchCount > 0)
-            {
-                //一番最初は終わりの時だけfalseをいれるため
-                tapinfo = new Tap((Input.GetTouch(0).phase != TouchPhase.Ended), Input.GetTouch(0).position, Input.GetTouch(0).phase, tapObj);
             }
         }
     }

@@ -457,6 +457,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8fef9f1080e7ea49802e2bb562c3ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDontDestroy: 1
   tapinfo:
     is_tap: 0
     tap_position: {x: 0, y: 0}
@@ -5804,6 +5805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba1ba6626085f143b6900b02bff5af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDontDestroy: 1
 --- !u!4 &751991445
 Transform:
   m_ObjectHideFlags: 0
@@ -5863,6 +5865,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa8109bb55599de4daf23d8f1c51a712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsDontDestroy: 1
   AudioSourceObjects:
   - {fileID: 1481768650}
   - {fileID: 2142556490}
@@ -11451,9 +11454,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: -1}
-  - {x: 0, y: 0, z: -1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1

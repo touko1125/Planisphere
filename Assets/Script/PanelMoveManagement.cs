@@ -49,23 +49,13 @@ public class PanelMoveManagement : MonoBehaviour
                 //押していたのを示す
                 isTaped = true;
             }
-            else
-            {
-                if (isTaped)
-                {
-                    //ビームの描画
-                    Beem.GetComponent<BeamComponent>().StartShotBeam(lastTappedTab);
-
-                    lastTappedTab = null;
-
-                    isTaped = false;
-                }
-            }
         }
         else
         {
             if (isTaped)
             {
+                Debug.Log("1");
+
                 //ビームの描画
                 Beem.GetComponent<BeamComponent>().StartShotBeam(lastTappedTab);
 
