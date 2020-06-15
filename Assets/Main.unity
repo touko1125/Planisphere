@@ -121,6 +121,51 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &31179031
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 31179033}
+  - component: {fileID: 31179032}
+  m_Layer: 0
+  m_Name: Presenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &31179032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31179031}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb08d0c774c19d346884b5e5ea68968c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panelMovement: {fileID: 247369927}
+  beamComponent: {fileID: 2143147537}
+--- !u!4 &31179033
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31179031}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.041436553, y: -1.2458212, z: -1.4215713}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &50068468
 GameObject:
   m_ObjectHideFlags: 0
@@ -273,7 +318,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e75b16ab2ff9a0448ad0ecbe20fe0194, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a913a9a4191ee4c4683e2c5e79d9155a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -395,7 +440,7 @@ GameObject:
   - component: {fileID: 247369928}
   - component: {fileID: 247369927}
   m_Layer: 0
-  m_Name: PanelMovaManagement
+  m_Name: PanelMoveManagement
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -460,8 +505,8 @@ MonoBehaviour:
   IsDontDestroy: 1
   tapinfo:
     is_tap: 0
-    tap_position: {x: 0, y: 0}
-    tap_touchPhase: 0
+    start_tapPosition: {x: 0, y: 0}
+    end_tapPosition: {x: 0, y: 0}
     tap_Obj: {fileID: 0}
 --- !u!4 &360933744
 Transform:
@@ -5302,7 +5347,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: bad82b14c8cce83409a5f5fec22eb007, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d4a595fad4033044e998cb446ed5fdb6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -5750,7 +5795,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: f08954a2bce9421428cbd525c9e872af, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2bfb31816b9472d4a8f919d21ecacdc7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -6136,7 +6181,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 382d313ede5caf644b4ce0e58a8b15f7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 78df5909b0462fa46865d532aae0c25d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
