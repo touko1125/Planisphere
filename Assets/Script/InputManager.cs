@@ -10,10 +10,7 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
 
     private bool isPlayOnApplication;
 
-    private void Awake()
-    {
-
-    }
+    private Vector2 previousTapPos;
 
     // Start is called before the first frame update
     void Start()
@@ -29,8 +26,8 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
 
     public void ReceiveInput()
     {
-        Vector2 worldTapPos = Camera.main.ScreenToWorldPoint(tapinfo.tap_position);
-        RaycastHit2D hit = Physics2D.Raycast(worldTapPos, Vector2.zero);
+        Ray cameraRay = Camera.main.ScreenPointToRay(previousTapPos);
+        RaycastHit2D hit = Physics2D.Raycast(cameraRay.origin,cameraRay.direction);
 
         //タップしている場所の座標を変換
         var tapObj = hit ? hit.collider.gameObject : null;
@@ -38,8 +35,23 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
         //タッチされているかのチェック
         if (Input.touchCount > 0)
         {
-            //一番最初は終わりの時だけfalseをいれるため
-            tapinfo = new Tap((Input.GetTouch(0).phase != TouchPhase.Ended), Input.GetTouch(0).position, Input.GetTouch(0).phase, tapObj);
+            //押した瞬間
+            if (Input.GetTouch(0).phase == TouchPhase.Began)
+            {
+                previousTapPos = Input.GetTouch(0).position;
+            }
+            //押している間
+            if (Input.GetTouch(0).phase == TouchPhase.Moved)
+            {
+                tapinfo = new Tap(true, previousTapPos, ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
+                previousTapPos = Input.GetTouch(0).position;
+            }
+            //離した瞬間
+            if (Input.GetTouch(0).phase == TouchPhase.Ended)
+            {
+                tapinfo = new Tap(false, previousTapPos, ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
+                previousTapPos = Vector2.zero;
+            }
 
             isPlayOnApplication = true;
         }
@@ -49,17 +61,25 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
             //押した瞬間
             if (Input.GetMouseButtonDown(0))
             {
-                tapinfo = new Tap(true, Input.mousePosition, TouchPhase.Began, tapObj);
+                previousTapPos = Input.mousePosition;
             }
+            //押している間
             if (Input.GetMouseButton(0))
             {
-                tapinfo = new Tap(true, Input.mousePosition, TouchPhase.Moved, tapObj);
+                tapinfo = new Tap(true, previousTapPos, ChangeScreenPosIntoWorldPos((Vector2)Input.mousePosition), tapObj);
+                previousTapPos = Input.mousePosition;
             }
             //離した瞬間
             if (Input.GetMouseButtonUp(0))
             {
-                tapinfo = new Tap(false, Input.mousePosition, TouchPhase.Ended, tapObj);
+                tapinfo = new Tap(false, previousTapPos, ChangeScreenPosIntoWorldPos((Vector2)Input.mousePosition), tapObj);
+                previousTapPos = Vector2.zero;
             }
         }
+    }
+
+    public Vector2 ChangeScreenPosIntoWorldPos(Vector2 screenPos)
+    {
+        return Camera.main.ScreenToWorldPoint(screenPos);
     }
 }

@@ -8,25 +8,32 @@ namespace TapClass
     public class Tap
     {
         public bool is_tap;   //タップされているか
-        public Vector2 tap_position;   //タップ座標
-        public TouchPhase tap_touchPhase;   //タップ状態
+        public Vector2 start_tapPosition;   //最初のタップ座標
+        public Vector2 end_tapPosition;   //最後のタップ座標
         public GameObject tap_Obj;  //タップされたもの
 
         //positionはnull許容型
-        public Tap(bool isTap = false, Vector2? tapPosition = null, TouchPhase tapTouchPhase = TouchPhase.Began, GameObject tapObj = null)
+        public Tap(bool isTap = false, Vector2? startTapPosition = null, Vector2? endTapPosition = null, GameObject tapObj = null)
         {
             this.is_tap = isTap;
 
-            if (tapPosition == null)
+            if (startTapPosition == null)
             {
-                this.tap_position = new Vector2(0, 0);
+                this.start_tapPosition = new Vector2(0, 0);
             }
             else
             {
-                this.tap_position = (Vector2)tapPosition;
+                this.start_tapPosition = (Vector2)startTapPosition;
             }
 
-            this.tap_touchPhase = tapTouchPhase;
+            if (endTapPosition == null)
+            {
+                this.end_tapPosition = new Vector2(0, 0);
+            }
+            else
+            {
+                this.end_tapPosition = (Vector2)endTapPosition;
+            }
 
             this.tap_Obj = tapObj;
         }

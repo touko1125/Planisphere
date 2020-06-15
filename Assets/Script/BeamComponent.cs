@@ -39,8 +39,6 @@ public class BeamComponent : MonoBehaviour
     {
         lineRenderer.positionCount=0;
 
-        Debug.Log(shotbeamTabObj.transform.parent.rotation.eulerAngles.z);
-
         //頂点が最初の点なので単位円からは90度回転している?
         Vector2 direction = new Vector2(-Mathf.Sin(shotbeamTabObj.transform.parent.rotation.z), -Mathf.Cos(shotbeamTabObj.transform.parent.rotation.z));
 
@@ -58,8 +56,6 @@ public class BeamComponent : MonoBehaviour
         //太くする
         Physics.SphereCast(beemRay, 3.0f,out beemRaycast,rayerNum);
 
-
-
         //Scene画面に描画
         Debug.DrawRay(beemStartPos, beemEndPos, Color.white, 5.0f);
 
@@ -69,12 +65,9 @@ public class BeamComponent : MonoBehaviour
         while (differenceLine.magnitude > 0.1f)
         {
             differenceLine = differenceLine / 2f;
-            Debug.Log(differenceLine);
         }
 
         differenceNum = (int)(distance.magnitude / differenceLine.magnitude);
-
-        Debug.Log(differenceNum);
 
         lineRenderer.alignment = LineAlignment.TransformZ;
 
