@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TapClass;
 
 public class BeamComponent : MonoBehaviour
 {
@@ -16,6 +17,10 @@ public class BeamComponent : MonoBehaviour
 
     private Vector3 differenceLine;
 
+    public IEnumerator shot_beam_coroutine;
+
+    public bool isDrawLine;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,52 +33,63 @@ public class BeamComponent : MonoBehaviour
         
     }
 
-    public void StartShotBeam(GameObject shotbeamTabObj)
+    public IEnumerator ShotBeam(Vector3 beemOriginPos,Vector3 directionPos)
     {
-        Debug.Log("bbbb");
+        //今から書き始めるよサイン
+        isDrawLine = true;
 
-        StartCoroutine(ShotBeam(shotbeamTabObj));
-    }
-
-    public IEnumerator ShotBeam(GameObject shotbeamTabObj)
-    {
+        //LineRendererの頂点の初期化
         lineRenderer.positionCount=0;
 
-        //頂点が最初の点なので単位円からは90度回転している?
-        Vector2 direction = new Vector2(-Mathf.Sin(shotbeamTabObj.transform.parent.rotation.z), -Mathf.Cos(shotbeamTabObj.transform.parent.rotation.z));
+        //z軸の調整
+        beemOriginPos = new Vector3(beemOriginPos.x, beemOriginPos.y, Const.rayDepth);
+        directionPos = new Vector3(directionPos.x, directionPos.y,Const.rayDepth);
 
-        //調整
-        Vector3 beemStartPos = new Vector3(shotbeamTabObj.transform.position.x+(direction/5.0f).x, shotbeamTabObj.transform.position.y + (direction / 5.0f).y, -1);
-        Vector3 beemEndPos = new Vector3(direction.x * 2.5f, direction.y * 2.5f, -1);
+        //Rayのベクトル取得
+        Vector3 direction = directionPos-beemOriginPos;
+
+        //Rayはどこからどこに打つにしても長さは直径(当たり判定のためのためなので直径の長さ以上必要になることはないはず…)
+        Vector3 beemEndPos = new Vector3(direction.x, direction.y, 0);
 
         //レイヤーの指定
-        int rayerNum = LayerMask.NameToLayer("BeamCollision");
+        int layerNum = LayerMask.NameToLayer("BeamCollision");
 
-        Ray beemRay = new Ray(beemStartPos,beemEndPos);
-
-        RaycastHit beemRaycast;
-
-        //太くする
-        Physics.SphereCast(beemRay, 3.0f,out beemRaycast,rayerNum);
+        Ray beemRay = new Ray(beemOriginPos,beemEndPos*10.0f);
 
         //Scene画面に描画
-        Debug.DrawRay(beemStartPos, beemEndPos, Color.white, 5.0f);
+        Debug.DrawRay(beemRay.origin,beemRay.direction*10, Color.white, 5.0f);
 
-        distance = beemEndPos - beemStartPos;
-        differenceLine = distance;
+        //ぶつかった奴を格納
+        List<GameObject> rayHitObj=new List<GameObject>();
+
+        RaycastHit beemHit;
+
+        if (Physics.Raycast(beemRay, out beemHit, 10, layerNum))
+        {
+            Debug.Log("Hit");
+            foreach (RaycastHit hit in Physics.RaycastAll(beemRay.origin,beemRay.direction))
+            {
+                rayHitObj.Add(hit.transform.gameObject);
+            }
+
+            JudgeHitObjType(rayHitObj.ToArray());
+
+            //いったんここで終了
+            yield break;
+        }
+
+        differenceLine = direction*Const.radius;
 
         while (differenceLine.magnitude > 0.1f)
         {
             differenceLine = differenceLine / 2f;
         }
 
-        differenceNum = (int)(distance.magnitude / differenceLine.magnitude);
+        differenceNum = (int)(direction.magnitude*Const.radius / differenceLine.magnitude);
 
         lineRenderer.alignment = LineAlignment.TransformZ;
 
         lineRenderer.textureMode = LineTextureMode.Tile;
-
-        lineRenderer.SetWidth(1.5f, 1.5f);
 
         lineRenderer.material = lineMaterial;
 
@@ -82,8 +98,15 @@ public class BeamComponent : MonoBehaviour
             yield return new WaitForSeconds(0.02f);
             lineRenderer.positionCount=i+1;
 
-            lineRenderer.SetPosition(i, beemStartPos + differenceLine);
-            beemStartPos = beemStartPos + differenceLine;
+            lineRenderer.SetPosition(i, beemOriginPos + differenceLine);
+            beemOriginPos = beemOriginPos + differenceLine;
         }
+
+        isDrawLine = false;
+    }
+
+    public void JudgeHitObjType(GameObject[] hitObjects)
+    {
+
     }
 }

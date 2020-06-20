@@ -20,16 +20,47 @@ public class PanelBeamConnectPresenter : MonoBehaviour
     [SerializeField]
     private BeamComponent beamComponent;
 
+    private GameObject tapObj;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         ObserveInput();
+        ObserveProgressMovePanel();
+    }
+
+    public void ObserveProgressMovePanel()
+    {
+        if (!panelMovement.isMoved) return;
+
+        tapObj = panelMovement.previousTab;
+
+        if (getTapInfo().is_tap) return;
+
+        if (beamComponent.isDrawLine) return;
+
+        BeamSet();
+
+        panelMovement.isMoved = false;
+    }
+
+    public void BeamSet()
+    {
+        //タブ位置からビーム発射位置にする調整
+        Vector3 direction = tapObj.transform.parent.transform.parent.transform.parent.position - tapObj.transform.position;
+        Vector3 rayOrigin = new Vector3(tapObj.transform.position.x + (direction/7).x, tapObj.transform.position.y + (direction/7).y, -1);
+
+        //コルーチンの設定(最初はタブから対角線)
+        beamComponent.shot_beam_coroutine=beamComponent.ShotBeam
+            (rayOrigin
+            ,tapObj.transform.parent.transform.parent.transform.parent.position);
+        StartCoroutine(beamComponent.shot_beam_coroutine);
     }
 
     public void ObserveInput()
@@ -41,8 +72,6 @@ public class PanelBeamConnectPresenter : MonoBehaviour
         if (getTapInfo().tap_Obj == null) return;
 
         if (getTapInfo().tap_Obj.tag != "Tab") return;
-
-        Debug.Log("aaaaaaa");
 
         panelMovement.RotateTab(getTapInfo());
     }

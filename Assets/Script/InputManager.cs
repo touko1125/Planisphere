@@ -43,13 +43,13 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
             //押している間
             if (Input.GetTouch(0).phase == TouchPhase.Moved)
             {
-                tapinfo = new Tap(true, previousTapPos, ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
+                tapinfo = new Tap(true, ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
                 previousTapPos = Input.GetTouch(0).position;
             }
             //離した瞬間
             if (Input.GetTouch(0).phase == TouchPhase.Ended)
             {
-                tapinfo = new Tap(false, previousTapPos, ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
+                tapinfo = new Tap(false,ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
                 previousTapPos = Vector2.zero;
             }
 
@@ -66,13 +66,13 @@ public class InputManager : SingletonMonoBehaviour<InputManager>
             //押している間
             if (Input.GetMouseButton(0))
             {
-                tapinfo = new Tap(true, previousTapPos, ChangeScreenPosIntoWorldPos((Vector2)Input.mousePosition), tapObj);
+                tapinfo = new Tap(true,ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos((Vector2)Input.mousePosition), tapObj);
                 previousTapPos = Input.mousePosition;
             }
             //離した瞬間
             if (Input.GetMouseButtonUp(0))
             {
-                tapinfo = new Tap(false, previousTapPos, ChangeScreenPosIntoWorldPos((Vector2)Input.mousePosition), tapObj);
+                tapinfo = new Tap(false, ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos((Vector2)Input.mousePosition), tapObj);
                 previousTapPos = Vector2.zero;
             }
         }
