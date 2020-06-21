@@ -14,6 +14,8 @@ public class PlanetComponent : MonoBehaviour
     void Start()
     {
         FaceParent = gameObject.transform.Find("Face").gameObject;
+
+        currentFace = FaceParent.transform.GetChild((int)planetFace).gameObject;
     }
 
     // Update is called once per frame
@@ -30,7 +32,9 @@ public class PlanetComponent : MonoBehaviour
         //個人情報の更新
         planetFace = face;
 
-        //Planetくん!新しい顔よ!
         FaceParent.transform.GetChild((int)face).gameObject.SetActive(true);
+
+        //新しい表情の登録
+        currentFace = FaceParent.transform.GetChild((int)face).gameObject;
     }
 }

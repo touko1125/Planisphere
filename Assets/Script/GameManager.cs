@@ -18,6 +18,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         surprise
     }
 
+    public enum ObjType
+    {
+        Planet,
+        Mirror,
+        Obstacle
+    }
+
     // Start is called before the first frame update
     void Start()
     {
