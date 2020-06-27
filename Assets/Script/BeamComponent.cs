@@ -67,17 +67,19 @@ public class BeamComponent : MonoBehaviour
         //ぶつかった場所を格納
         List<Vector3> rayHitPos = new List<Vector3>();
 
-        RaycastHit beemHit;
+        Debug.Log("beforeHit");
 
-        if (Physics.Raycast(beemRay, out beemHit,beemRay.direction.magnitude*Const.radius))
+        if (Physics2D.Raycast(beemRay.origin, beemRay.direction * Const.radius).collider)
         {
             Debug.Log("Hit!");
-            foreach (RaycastHit hit in Physics.RaycastAll(beemRay.origin,beemRay.direction))
+            foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction))
             {
                 //確認済みでなければ追加
-                if(!hit.transform.gameObject.GetComponent<HitObjComponent>().isChecked) 
-                rayHitObj.Add(hit.transform.gameObject);
-                rayHitPos.Add(hit.point);
+                if (!hit.transform.gameObject.GetComponent<HitObjComponent>().isChecked)
+                {
+                    rayHitObj.Add(hit.transform.gameObject);
+                    rayHitPos.Add(hit.point);
+                }
             }
 
             if (rayHitObj.Count > 0)
@@ -85,14 +87,14 @@ public class BeamComponent : MonoBehaviour
                 //今から打つビームに当たった奴を入れる用のリセット
                 currentBeamHitObjects.Clear();
 
-                JudgeHitObjType(rayHitObj,rayHitPos,beemOriginPos,directionPos);
+                JudgeHitObjType(rayHitObj, rayHitPos, beemOriginPos, directionPos);
 
                 //いったんここで終了
                 yield break;
             }
         }
 
-        for(int i = 0; i < line_RedererPos_List.Count; i++)
+        for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
 
             line_Difference = line_RedererPos_List[i][1];
@@ -111,6 +113,8 @@ public class BeamComponent : MonoBehaviour
             LineRenderer lineRenderer = lineRendererObj.GetComponent<LineRenderer>();
 
             lineRenderer.alignment = LineAlignment.TransformZ;
+
+            lineRenderer.SetWidth(4.0f, 4.0f);
 
             lineRenderer.textureMode = LineTextureMode.Tile;
 
@@ -242,6 +246,10 @@ public class BeamComponent : MonoBehaviour
                     //鏡の背面に当たったことは次はなかったことに
                     hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
 
+                    break;
+                case GameManager.ObjType.Edge:
+                    Debug.Log("Edge");
+                    nextSetBeamPos[1] = hitPos[i]-raystartPos;
                     break;
             }
         }

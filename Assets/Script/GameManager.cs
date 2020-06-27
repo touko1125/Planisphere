@@ -22,7 +22,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         Planet,
         Mirror,
-        Obstacle
+        Obstacle,
+        Edge
     }
 
     // Start is called before the first frame update
