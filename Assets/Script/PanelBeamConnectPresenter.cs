@@ -45,6 +45,8 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         if (beamComponent.isDrawLine) return;
 
+        Debug.Log("ddddd");
+
         BeamSet();
 
         panelMovement.isMoved = false;
