@@ -56,7 +56,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
     {
         //タブ位置からビーム発射位置にする調整
         Vector3 direction = tapObj.transform.parent.transform.parent.transform.parent.position - tapObj.transform.position;
-        Vector3 rayOrigin = new Vector3(tapObj.transform.position.x + (direction/7).x, tapObj.transform.position.y + (direction/7).y, -1);
+        Vector3 rayOrigin = new Vector3(tapObj.transform.position.x + (direction/8).x, tapObj.transform.position.y + (direction/8).y, -1);
 
         //コルーチンの設定(最初はタブから対角線)
         beamComponent.shot_beam_coroutine=beamComponent.ShotBeam(rayOrigin,direction*Const.radius);

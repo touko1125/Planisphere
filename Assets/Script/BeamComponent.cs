@@ -3,32 +3,45 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using DG.Tweening;
+using UniRx;
 
 public class BeamComponent : MonoBehaviour
 {
     public GameObject lineRendererObjPrefab;
 
-    public Material lineMaterial;
+    [SerializeField]
+    private PlanetManager planetManager;
+
+    private GameObject Edge;
+
+    public Material currentLineMaterial;
+
+    public Material beforeLineMaterial;
 
     private Vector3 line_Difference;
 
-    private List<GameObject> currentBeamHitObjects = new List<GameObject>();
+    public List<GameObject> currentBeamHitObjects = new List<GameObject>();
 
     private List<GameObject> beforeLineRendererObjects = new List<GameObject>();
+
+    private List<GameObject> twoBeforeLineRendererObjects = new List<GameObject>();
 
     public IEnumerator shot_beam_coroutine;
 
     public bool isDrawLine;
 
+    private bool is_pass_Mirror;
+
     private Ray beemRay;
 
     //最終的に描画するときに使用
-    private List<List<Vector3>> line_RedererPos_List = new List<List<Vector3>>(); 
+    private List<List<Vector3>> line_RedererPos_List = new List<List<Vector3>>();
 
     // Start is called before the first frame update
     void Start()
     {
-
+        Edge = GameObject.Find("Edge");
     }
 
     // Update is called once per frame
@@ -42,12 +55,21 @@ public class BeamComponent : MonoBehaviour
         //今から書き始めるよサイン
         isDrawLine = true;
 
+        //一個前の線を薄く
+        for(int i = 0; i < beforeLineRendererObjects.Count; i++)
+        {
+            beforeLineRendererObjects[i].GetComponent<LineRenderer>().material = beforeLineMaterial;
+        }
+
+        twoBeforeLineRendererObjects = beforeLineRendererObjects;
+
         //z軸の調整
         beemOriginPos = new Vector3(beemOriginPos.x, beemOriginPos.y, Const.rayDepth);
         directionPos = new Vector3(directionPos.x, directionPos.y,0);
 
         //レイヤーの指定
-        int layerNum = LayerMask.NameToLayer("BeamCollision");
+        int layerNum1 = LayerMask.NameToLayer("BeamCollision");
+        int layerNum2 = LayerMask.NameToLayer("Edge");
 
         beemRay = new Ray(beemOriginPos,directionPos);
 
@@ -77,7 +99,7 @@ public class BeamComponent : MonoBehaviour
         if (Physics2D.Raycast(beemRay.origin, beemRay.direction).collider)
         {
             Debug.Log("Hit!");
-            foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction,Mathf.Infinity,1<<layerNum))
+            foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction,Mathf.Infinity,1<<layerNum1|1<<layerNum2))
             {
                 Debug.Log(hit.transform.gameObject);
                 //確認済みでなければ追加
@@ -92,20 +114,53 @@ public class BeamComponent : MonoBehaviour
 
             if (rayHitObj.Count > 0)
             {
-                //今から打つビームに当たった奴を入れる用のリセット
-                currentBeamHitObjects.Clear();
+                //縁だけで当たってる時を外す
+                if (!(rayHitObj.Count == 1 && rayHitObj[rayHitObj.Count - 1] == Edge))
+                {
+                    StartCoroutine(JudgeHitObjType(rayHitObj, rayHitPos, beemOriginPos, directionPos));
 
-                StartCoroutine(JudgeHitObjType(rayHitObj, rayHitPos, beemOriginPos, directionPos));
-
-                Debug.Log("aaaaaaa");
-
-                //いったんここで終了
-                yield break;
+                    //いったんここで終了
+                    yield break;
+                }
+                else
+                {
+                    //鏡を通った後に縁に当たる
+                    if (is_pass_Mirror)
+                    {
+                        Debug.Log("EdgeEnd");
+                        //終点を縁に
+                        line_RedererPos_List[line_RedererPos_List.Count - 1][1] = rayHitPos[0] - beemOriginPos;
+                    }
+                }
             }
         }
 
+        //一個前の線上にあったオブジェクトをリセット
+        for (int i = 0; i < currentBeamHitObjects.Count; i++)
+        {
+            switch (currentBeamHitObjects[i].GetComponent<HitObjComponent>().objType)
+            {
+                case GameManager.ObjType.Planet:
+                    currentBeamHitObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.nomal);
+                    break;
+            }
+        }
+
+        //今から打つビームに当たった奴を入れる用のリセット
+        currentBeamHitObjects.Clear();
+
+        //描画するまえに一個前の線をフェードアウト
+        //for (int i = 0; i < twoBeforeLineRendererObjects.Count; i++)
+        //{
+        //    Destroy(twoBeforeLineRendererObjects[i]);
+        //}
+
+        //twoBeforeLineRendererObjects.Clear();
+
         for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
+            //z軸の調整
+            line_RedererPos_List[i][1] = new Vector3(line_RedererPos_List[i][1].x, line_RedererPos_List[i][1].y,0);
 
             line_Difference = line_RedererPos_List[i][1];
 
@@ -128,7 +183,7 @@ public class BeamComponent : MonoBehaviour
 
             lineRenderer.textureMode = LineTextureMode.Tile;
 
-            lineRenderer.material = lineMaterial;
+            lineRenderer.material = currentLineMaterial;
 
             for (int n = 0; n < differenceNum; n++)
             {
@@ -138,6 +193,8 @@ public class BeamComponent : MonoBehaviour
                 lineRenderer.SetPosition(n, line_RedererPos_List[i][0] + line_Difference);
                 line_RedererPos_List[i][0] = line_RedererPos_List[i][0] + line_Difference;
             }
+
+            is_pass_Mirror = false;
 
             yield return new WaitForSeconds(0.2f);
         }
@@ -158,6 +215,8 @@ public class BeamComponent : MonoBehaviour
     public IEnumerator JudgeHitObjType(List<GameObject> hitObjects,List<Vector3> hitPos,Vector3 raystartPos,Vector3 rayDirection)
     {
         Vector3[] nextSetBeamPos = new Vector3[2];
+
+        is_pass_Mirror = false;
 
         //初期化
         nextSetBeamPos[0] = raystartPos;
@@ -195,8 +254,6 @@ public class BeamComponent : MonoBehaviour
                     break;
                 case GameManager.ObjType.Mirror:
 
-                    bool is_pass_Mirror = false;
-
                     //鏡の表面裏面ともにビームが通っているかどうか
                     if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairMirror))
                     {
@@ -222,11 +279,16 @@ public class BeamComponent : MonoBehaviour
                     //鏡の表面を通っていたら反射
                     if (is_pass_Mirror)
                     {
+                        Debug.Log("Mirror");
+
                         //二回呼び出してたら二回lineRendererリストに追加されてたからくっしょん
                         var mirrorAngle = getMirrorAngleCalculation(hitObjects[i], hitPos[i], raystartPos, rayDirection);
 
                         nextSetBeamPos[0] = mirrorAngle[0];
                         nextSetBeamPos[1] = mirrorAngle[1];
+
+                        Debug.Log(nextSetBeamPos[0]);
+                        Debug.Log(nextSetBeamPos[1]);
 
                         //鏡に複数回当たれなくなるけどチェック付ける
                         hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
@@ -256,21 +318,20 @@ public class BeamComponent : MonoBehaviour
                     hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
 
                     break;
-                case GameManager.ObjType.Edge:
+                //case GameManager.ObjType.Edge:
 
-                    var edgeObjInList = hitObjects
-                        .GroupBy(name => name)
-                        .Where(name=>name.Count()>1)
-                        .Select(group=>group.Key).ToList();
-
-                    nextSetBeamPos[1] = hitPos[i] - raystartPos;
-
-                    hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
-                    break;
+                //    if (is_pass_Mirror)
+                //    {
+                //        //nextSetBeamPos[1] = hitPos[i] - raystartPos;
+                //    }
+                //    break;
             }
         }
 
         yield return null;
+
+        Debug.Log(nextSetBeamPos[0]);
+        Debug.Log(nextSetBeamPos[1]);
 
         //描画審査
         shot_beam_coroutine = ShotBeam(nextSetBeamPos[0],nextSetBeamPos[1]);
@@ -281,10 +342,19 @@ public class BeamComponent : MonoBehaviour
     public Vector3[] getMirrorAngleCalculation(GameObject hitObj,Vector3 hitPos,Vector3 raystartPos,Vector3 rayDirection)
     {
         //クオータニオン→オイラー角→ラジアン        
-        Vector3 mirrorVector = new Vector3(Mathf.Cos(hitObj.transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(hitObj.transform.rotation.eulerAngles.z * Mathf.Deg2Rad));
+        Vector3 mirrorVector = new Vector3(Mathf.Cos(hitObj.transform.parent.transform.rotation.eulerAngles.z * Mathf.Deg2Rad), Mathf.Sin(hitObj.transform.parent.rotation.eulerAngles.z * Mathf.Deg2Rad));
 
-        //なす角が90度以上なら調整
-        float angle = Vector3.Angle(rayDirection, mirrorVector) > 180 ? 90 - Vector3.Angle(rayDirection, mirrorVector) : Vector3.Angle(rayDirection, mirrorVector);
+        //法線ベクトル?
+        System.Numerics.Vector3 nomalVector = new System.Numerics.Vector3(1, -(mirrorVector.x / mirrorVector.y),0);
+
+        UnityEngine.Vector3 nomalUnityVector = new UnityEngine.Vector3(1, -(mirrorVector.x / mirrorVector.y), 0);
+
+        var u = System.Numerics.Vector3.Multiply(2 * Vector3.Dot(-rayDirection, nomalUnityVector), nomalVector);
+
+        var k = new Vector3(u.X, u.Y, u.Z);
+
+        //反射ベクトル求められている?
+        Vector3 reflectVector = rayDirection + k;
 
         //一番新しいところに描画位置(ビーム始点からかがみまで)を収納
         line_RedererPos_List.Add(new List<Vector3>());
@@ -296,7 +366,7 @@ public class BeamComponent : MonoBehaviour
         Vector3[] nextSetBeamPos=new Vector3[2];
 
         nextSetBeamPos[0] = hitPos;
-        nextSetBeamPos[1] = new Vector3(-Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * Const.radius;
+        nextSetBeamPos[1] = reflectVector;
 
         return nextSetBeamPos;
     }
