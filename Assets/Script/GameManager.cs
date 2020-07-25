@@ -26,6 +26,59 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         Edge
     }
 
+    public bool isClearGame;
+
+    public enum Stage
+    {
+        Cmi,
+        Tri,
+        Cyg,
+        Del,
+        Cnc,
+        Crt,
+        Crv,
+        Crb,
+        Cep,
+        Sgr,
+        Lep,
+        Lyra,
+        Umi,
+        Cas,
+        Gem,
+        Ori,
+        Her,
+        Peg,
+        Cra,
+        Uma,
+        Cma,
+        Aur,
+        Lup,
+        Psc,
+        Cet,
+        Dra,
+        Cen,
+        Ari,
+        Leo,
+        And,
+        Aql,
+        Tau,
+        Oph,
+        Sge,
+        Equ,
+        Ara,
+        Psa,
+        Vir,
+        Boo,
+        Lib,
+        Cap,
+        Agr,
+        Per,
+        Eri,
+        Sco,
+        Hya,
+        Argo
+    }
+
     // Start is called before the first frame update
     void Start()
     {

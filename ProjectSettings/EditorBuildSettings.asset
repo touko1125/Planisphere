@@ -4,5 +4,71 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Test.unity
+    guid: ab0eb43fc69cde94faa944023485dd80
+  - enabled: 1
+    path: Assets/Scenes/StageSelect.unity
+    guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Cmi.unity
+    guid: 41e90ee20f270de48bd17ad1a76bc723
+  - enabled: 1
+    path: Assets/Scenes/Tri.unity
+    guid: 7e5d9133959b55e4f9cc1e5b120c0cf8
+  - enabled: 1
+    path: Assets/Scenes/Cas.unity
+    guid: 6aec4efe152cd8640ac0210d5e92634d
+  - enabled: 1
+    path: Assets/Scenes/Cep.unity
+    guid: 0b30a0e62ef2f4e4f894d862d3c707e4
+  - enabled: 1
+    path: Assets/Scenes/Cnc.unity
+    guid: 05221afc653c91143b6a7eb02543ff9b
+  - enabled: 1
+    path: Assets/Scenes/Cra.unity
+    guid: 70107d009786e194faad4728b5ab68c9
+  - enabled: 1
+    path: Assets/Scenes/Crb.unity
+    guid: 34aaf681ea9fb4b459be3270fe5e184d
+  - enabled: 1
+    path: Assets/Scenes/Crt.unity
+    guid: 87240c743144285478a317b35c4b6203
+  - enabled: 1
+    path: Assets/Scenes/Crv.unity
+    guid: e85bdc0bec5c9cb4cb63d9a29eb41405
+  - enabled: 1
+    path: Assets/Scenes/Cyg.unity
+    guid: 2ae439d3bcc47df4c8760619b9fef572
+  - enabled: 1
+    path: Assets/Scenes/Del.unity
+    guid: eb52d98c5412fc04b9534b690cc700b1
+  - enabled: 1
+    path: Assets/Scenes/Gem.unity
+    guid: 3a233a9bf67fd7646a6bec48f47b5b5e
+  - enabled: 1
+    path: Assets/Scenes/Her.unity
+    guid: 5618fac796c894f4fa98aa99434227c6
+  - enabled: 1
+    path: Assets/Scenes/Lep.unity
+    guid: 49b09efb7f7876d48a6e28b1cda7ba7c
+  - enabled: 1
+    path: Assets/Scenes/Lup.unity
+    guid: 02ca01d0f1de0ab4aa44893f9b54132e
+  - enabled: 1
+    path: Assets/Scenes/Lyra.unity
+    guid: 82930d8a296793a49beb91e94df3ca31
+  - enabled: 1
+    path: Assets/Scenes/Ori.unity
+    guid: 2e60496903ee611468de0c7e7a676cae
+  - enabled: 1
+    path: Assets/Scenes/Peg.unity
+    guid: a5f9de6d4f2fe084eb83c47580554a7c
+  - enabled: 1
+    path: Assets/Scenes/Sgr.unity
+    guid: 370c2699e17193245a4f196f882529aa
+  - enabled: 1
+    path: Assets/Scenes/Umi.unity
+    guid: 570a4fcc1595ac040bb4391790f95301
   m_configObjects: {}

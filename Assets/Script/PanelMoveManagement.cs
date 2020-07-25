@@ -9,6 +9,8 @@ public class PanelMoveManagement : MonoBehaviour
 {
     public bool isMoved;
 
+    public int TabNum;
+
     public GameObject previousTab;
     // Start is called before the first frame update
     void Start()
@@ -50,10 +52,12 @@ public class PanelMoveManagement : MonoBehaviour
             new Vector3(tabParent.transform.localEulerAngles.x,
                         tabParent.transform.localEulerAngles.y,
                         tabParent.transform.localEulerAngles.z - angle)
-                        ,0.001f * ((tap.end_tapPosition - tap.start_tapPosition).magnitude)
+                        ,0.002f * ((tap.end_tapPosition - tap.start_tapPosition).magnitude)
                         ,RotateMode.FastBeyond360);
 
         isMoved = true;
+
+        TabNum = int.Parse(tap.tap_Obj.gameObject.name);
 
         previousTab = tap.tap_Obj;
 
