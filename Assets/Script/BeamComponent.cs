@@ -90,6 +90,23 @@ public class BeamComponent : MonoBehaviour
         currentBeamPlanetObjects[TabNum].Clear();
     }
 
+    public void ResetLine()
+    {
+        //for (int i = 0; i < 2; i++)
+        //{
+        //    for(int n = 0; n < beforeLineRendererObjects.Count; n++)
+        //    {
+        //        Debug.Log(beforeLineRendererObjects[i][n]);
+        //        Destroy(beforeLineRendererObjects[i][n]);
+        //    }
+
+        //    for (int n = 0; n < twoBeforeLineRendererObjects.Count; n++)
+        //    {
+        //        Destroy(twoBeforeLineRendererObjects[i][n]);
+        //    }
+        //}
+    }
+
     public IEnumerator ShotBeam(Vector3 beemOriginPos, Vector3 directionPos, int TabNum)
     {
         //今から書き始めるよサイン
@@ -226,7 +243,7 @@ public class BeamComponent : MonoBehaviour
 
             is_Reflected = false;
 
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.1f);
         }
 
         //次のビームに備えて状態のリセット

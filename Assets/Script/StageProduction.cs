@@ -51,9 +51,11 @@ public class StageProduction : MonoBehaviour
         //ゲームパネルの非表示
         Panel.SetActive(false);
 
-        for(int i = 0; i < ClearImages.Length; i++)
+        for (int i = 0; i < ClearImages.Length; i++)
         {
             var img = ClearImages[i];
+
+            img.gameObject.SetActive(true);
 
             //画像の表示
             DOTween.ToAlpha(() => img.color,

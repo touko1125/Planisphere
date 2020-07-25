@@ -22,6 +22,8 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
     private GameObject tapObj;
 
+    private GameObject previousTapTab;
+
     private GameObject tapTab;
 
     // Start is called before the first frame update
@@ -96,24 +98,37 @@ public class PanelBeamConnectPresenter : MonoBehaviour
         if (getTapInfo().is_tap == false)
         {
             tapTab = null;
+            previousTapTab = null;
             return;
         }
 
         if (getTapInfo().tap_Obj == null) return;
 
-        if (getTapInfo().tap_Obj.name == "BackGround")
+        if (getTapInfo().tap_Obj.tag != "Tab")
         {
-            if (tapTab!=null)
-            {
-                panelMovement.RotateTab(getTapInfo(),tapTab);
-            }
+            if (previousTapTab == null) return;
+            panelMovement.RotateTab(getTapInfo(), previousTapTab);
             return;
         }
 
-        if (getTapInfo().tap_Obj.tag == "Tab")
+        tapTab = getTapInfo().tap_Obj;
+
+        if (tapTab.tag == "Tab")
         {
-            tapTab = getTapInfo().tap_Obj;
-            panelMovement.RotateTab(getTapInfo(),getTapInfo().tap_Obj);
+            Debug.Log(tapTab);
+
+            Debug.Log(previousTapTab);
+
+            if (previousTapTab != null)
+            {
+                if (tapTab != previousTapTab)
+                {
+                    panelMovement.RotateTab(getTapInfo(), previousTapTab);
+                    return;
+                }
+            }
+            previousTapTab = tapTab;
+            panelMovement.RotateTab(getTapInfo(), getTapInfo().tap_Obj);
         }
     }
 

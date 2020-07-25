@@ -1863,13 +1863,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetList:
-  - {fileID: 815170626}
   - {fileID: 696079039}
   - {fileID: 679176030}
+  - {fileID: 815170626}
   - {fileID: 1901644606}
   - {fileID: 1150415891}
   beamComponent: {fileID: 1671697918}
   stageProduction: {fileID: 202242564}
+  lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
+    type: 3}
 --- !u!4 &540667031
 Transform:
   m_ObjectHideFlags: 0
@@ -2227,7 +2229,7 @@ GameObject:
   - component: {fileID: 679176033}
   - component: {fileID: 679176032}
   m_Layer: 9
-  m_Name: PlanetImage2
+  m_Name: PlanetImage1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2246,7 +2248,7 @@ Transform:
   m_Children:
   - {fileID: 348706721}
   m_Father: {fileID: 1405800533}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &679176032
 CircleCollider2D:
@@ -2402,7 +2404,7 @@ GameObject:
   - component: {fileID: 696079042}
   - component: {fileID: 696079041}
   m_Layer: 9
-  m_Name: PlanetImage1
+  m_Name: PlanetImage0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2421,7 +2423,7 @@ Transform:
   m_Children:
   - {fileID: 1721561981}
   m_Father: {fileID: 1405800533}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &696079041
 CircleCollider2D:
@@ -3136,7 +3138,7 @@ GameObject:
   - component: {fileID: 815170629}
   - component: {fileID: 815170628}
   m_Layer: 9
-  m_Name: PlanetImage0
+  m_Name: PlanetImage2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3155,7 +3157,7 @@ Transform:
   m_Children:
   - {fileID: 1439949205}
   m_Father: {fileID: 1405800533}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!58 &815170628
 CircleCollider2D:
@@ -5064,9 +5066,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 815170627}
   - {fileID: 696079040}
   - {fileID: 679176031}
+  - {fileID: 815170627}
   - {fileID: 1901644607}
   - {fileID: 1150415892}
   m_Father: {fileID: 0}
@@ -5670,6 +5672,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1617601173}
   - component: {fileID: 1617601172}
+  - component: {fileID: 1617601174}
   m_Layer: 0
   m_Name: BackGround
   m_TagString: Untagged
@@ -5741,6 +5744,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1617601174
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1617601171}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 10.429999, y: 18.519999, z: 0.2}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1663238495
 GameObject:
   m_ObjectHideFlags: 0
@@ -6738,7 +6754,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2033484324
 RectTransform:
   m_ObjectHideFlags: 0
