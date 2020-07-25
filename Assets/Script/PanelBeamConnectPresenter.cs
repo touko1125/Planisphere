@@ -22,6 +22,8 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
     private GameObject tapObj;
 
+    private GameObject tapTab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,11 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         tapObj = panelMovement.previousTab;
 
+        //線のリセット
         beamComponent.ThinandDestroyLine(int.Parse(tapObj.name));
+
+        //星の状態のリセット
+        beamComponent.RestPlanetState(int.Parse(tapObj.name));
 
         if (getTapInfo().is_tap) return;
 
@@ -83,15 +89,32 @@ public class PanelBeamConnectPresenter : MonoBehaviour
     {
         if (GameManager.Instance.isClearGame) return;
 
+        if (beamComponent.isDrawLine) return;
+
         if (getTapInfo() == null) return;
 
-        if (getTapInfo().is_tap == false) return;
+        if (getTapInfo().is_tap == false)
+        {
+            tapTab = null;
+            return;
+        }
 
         if (getTapInfo().tap_Obj == null) return;
 
-        if (getTapInfo().tap_Obj.tag != "Tab") return;
+        if (getTapInfo().tap_Obj.name == "BackGround")
+        {
+            if (tapTab!=null)
+            {
+                panelMovement.RotateTab(getTapInfo(),tapTab);
+            }
+            return;
+        }
 
-        panelMovement.RotateTab(getTapInfo());
+        if (getTapInfo().tap_Obj.tag == "Tab")
+        {
+            tapTab = getTapInfo().tap_Obj;
+            panelMovement.RotateTab(getTapInfo(),getTapInfo().tap_Obj);
+        }
     }
 
     public Tap getTapInfo()

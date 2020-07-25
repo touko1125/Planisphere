@@ -24,10 +24,10 @@ public class PanelMoveManagement : MonoBehaviour
 
     }
 
-    public void RotateTab(Tap tap)
+    public void RotateTab(Tap tap,GameObject tapTab)
     {
         //父 回転用
-        GameObject tabParent = tap.tap_Obj.transform.parent.gameObject;
+        GameObject tabParent = tapTab.transform.parent.gameObject;
 
         //曾祖父 中心位置取得用
         Vector2 parentCenterPanel = tabParent.transform.parent.transform.parent.position;
@@ -52,14 +52,14 @@ public class PanelMoveManagement : MonoBehaviour
             new Vector3(tabParent.transform.localEulerAngles.x,
                         tabParent.transform.localEulerAngles.y,
                         tabParent.transform.localEulerAngles.z - angle)
-                        ,0.002f * ((tap.end_tapPosition - tap.start_tapPosition).magnitude)
+                        ,0.001f * ((tap.end_tapPosition - tap.start_tapPosition).magnitude)
                         ,RotateMode.FastBeyond360);
 
         isMoved = true;
 
-        TabNum = int.Parse(tap.tap_Obj.gameObject.name);
+        TabNum = int.Parse(tapTab.gameObject.name);
 
-        previousTab = tap.tap_Obj;
+        previousTab = tapTab;
 
         //再生中でなければ
         if (AudioManager.Instance.AudioSources[0].isPlaying) return;

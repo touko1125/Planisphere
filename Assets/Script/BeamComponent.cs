@@ -23,6 +23,8 @@ public class BeamComponent : MonoBehaviour
 
     public List<GameObject> currentBeamHitObjects = new List<GameObject>();
 
+    private List<List<GameObject>> currentBeamPlanetObjects = new List<List<GameObject>>();
+
     private List<List<GameObject>> beforeLineRendererObjects = new List<List<GameObject>>();
 
     private List<List<GameObject>> twoBeforeLineRendererObjects = new List<List<GameObject>>();
@@ -53,6 +55,7 @@ public class BeamComponent : MonoBehaviour
         {
             beforeLineRendererObjects.Add(new List<GameObject>());
             twoBeforeLineRendererObjects.Add(new List<GameObject>());
+            currentBeamPlanetObjects.Add(new List<GameObject>());
         }
     }
 
@@ -75,6 +78,16 @@ public class BeamComponent : MonoBehaviour
         {
             Destroy(twoBeforeLineRendererObjects[TabNum][i]);
         }
+    }
+
+    public void RestPlanetState(int TabNum)
+    {
+        for(int i=0;i < currentBeamPlanetObjects[TabNum].Count; i++)
+        {
+            currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.nomal);
+        }
+
+        currentBeamPlanetObjects[TabNum].Clear();
     }
 
     public IEnumerator ShotBeam(Vector3 beemOriginPos, Vector3 directionPos, int TabNum)
@@ -220,6 +233,13 @@ public class BeamComponent : MonoBehaviour
         for(int i = 0; i < currentBeamHitObjects.Count; i++)
         {
             currentBeamHitObjects[i].GetComponent<HitObjComponent>().isChecked = false;
+
+            Debug.Log(currentBeamPlanetObjects[0]);
+
+            Debug.Log(currentBeamPlanetObjects[currentTabNum]);
+
+            //今のビームで貫かれた星のリスト
+            if (currentBeamHitObjects[i].GetComponent<HitObjComponent>().objType==GameManager.ObjType.Planet) currentBeamPlanetObjects[currentTabNum].Add(currentBeamHitObjects[i]);
         }
 
         //今から打つビームに当たった奴を入れる用のリセット
