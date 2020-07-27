@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlanetManager : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class PlanetManager : MonoBehaviour
 
     [SerializeField]
     private GameObject lineRendererObjPrefab;
+
+    [SerializeField]
+    private Material lineRendererMaterial;
+
+    private List<GameObject> lineRendererObjects = new List<GameObject>();
 
     // Start is called before the first frame update
     void Start()
@@ -40,22 +46,22 @@ public class PlanetManager : MonoBehaviour
 
         if (isAllPlanetSmile)
         {
+            GameManager.Instance.isClearGame = true;
+
             beamComponent.ResetLine();
 
             yield return StartCoroutine(ConnectPlanet());
 
-            yield return new WaitForSeconds(0.5f);
-
             IEnumerator clearProduction = stageProduction.ClearProduction(planetList);
 
             stageProduction.StartCoroutine(clearProduction);
-
-            GameManager.Instance.isClearGame = true;
         }
     }
 
     public IEnumerator ConnectPlanet()
     {
+        lineRendererObjects.Clear();
+
         List<Vector2> drawConnectLinePosList = new List<Vector2>();
         for(int i = 0; i < planetList.Count; i++)
         {
@@ -65,17 +71,24 @@ public class PlanetManager : MonoBehaviour
         //n個星があったらn-1個線を引く
         for(int i = 0; i < drawConnectLinePosList.Count-1; i++)
         {
+
             //線のベクトル取得
             Vector2 lineVector = drawConnectLinePosList[i + 1] - drawConnectLinePosList[i];
 
             //線のLineRendererの生成
             GameObject lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
 
+            lineRendererObjects.Add(lineRendererObj);
+
             LineRenderer lineRenderer = lineRendererObj.GetComponent<LineRenderer>();
 
             lineRenderer.alignment = LineAlignment.TransformZ;
 
-            lineRenderer.SetWidth(4.0f, 4.0f);
+            lineRenderer.material = lineRendererMaterial;
+
+            lineRenderer.material.color = new Color(1, 1, 1, 0);
+
+            lineRenderer.SetWidth(0.02f, 0.02f);
 
             lineRenderer.textureMode = LineTextureMode.Tile;
 
@@ -93,7 +106,29 @@ public class PlanetManager : MonoBehaviour
                 lineRenderer.positionCount=n+1;
                 lineRenderer.SetPosition(n, drawConnectLinePosList[i] + (lineDifference * n));
             }
-            yield return new WaitForSeconds(0.0f);
         }
+
+        var waitTime = 2f;
+
+        for (int i = 0; i < lineRendererObjects.Count; i++)
+        {
+            //yield return StartCoroutine(FadeLine(line.GetComponent<LineRenderer>()));
+
+            var lineMaterial = lineRendererObjects[i].GetComponent<LineRenderer>().material;
+
+            Debug.Log(lineMaterial.color.a);
+
+            //LIneの表示
+            DOTween.ToAlpha(() => lineMaterial.color,
+                            color => lineMaterial.color = color,
+                            1,
+                            waitTime);
+
+            Debug.Log(lineMaterial.color.a);
+        }
+
+        yield return new WaitForSeconds(waitTime);
+
+        yield break;
     }
 }

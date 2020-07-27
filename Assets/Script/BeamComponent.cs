@@ -46,6 +46,8 @@ public class BeamComponent : MonoBehaviour
     //最終的に描画するときに使用
     private List<List<Vector3>> line_RedererPos_List = new List<List<Vector3>>();
 
+    private int TestNum;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,19 +94,26 @@ public class BeamComponent : MonoBehaviour
 
     public void ResetLine()
     {
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    for(int n = 0; n < beforeLineRendererObjects.Count; n++)
-        //    {
-        //        Debug.Log(beforeLineRendererObjects[i][n]);
-        //        Destroy(beforeLineRendererObjects[i][n]);
-        //    }
+        for (int i = 0; i < 2; i++)
+        {
+            for (int n = beforeLineRendererObjects[i].Count-1;-1 < n; n--)
+            {
+                GameObject beforeLine = beforeLineRendererObjects[i][n];
 
-        //    for (int n = 0; n < twoBeforeLineRendererObjects.Count; n++)
-        //    {
-        //        Destroy(twoBeforeLineRendererObjects[i][n]);
-        //    }
-        //}
+                beforeLineRendererObjects[i].Remove(beforeLine);
+
+                Destroy(beforeLine);
+            }
+
+            for (int n = twoBeforeLineRendererObjects[i].Count-1; -1 < n; n--)
+            {
+                GameObject twoBeforeLine = twoBeforeLineRendererObjects[i][n];
+
+                twoBeforeLineRendererObjects[i].Remove(twoBeforeLine);
+
+                Destroy(twoBeforeLine);
+            }
+        }
     }
 
     public IEnumerator ShotBeam(Vector3 beemOriginPos, Vector3 directionPos, int TabNum)
@@ -133,9 +142,6 @@ public class BeamComponent : MonoBehaviour
         //line_RendererPos_Listのかずはリストの中のリストの要素(Vector3型)2n個とリストの中のリスト(List<Vector3>型)の1個
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(beemOriginPos);
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(directionPos);
-
-        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
-        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
 
         //Scene画面に描画
         Debug.DrawRay(beemRay.origin,beemRay.direction*Const.radius, Color.white, 5.0f);
@@ -192,6 +198,8 @@ public class BeamComponent : MonoBehaviour
 
         twoBeforeLineRendererObjects[currentTabNum].Clear();
 
+        Debug.Log(twoBeforeLineRendererObjects[currentTabNum].Count);
+
         if (beforeLineRendererObjects[currentTabNum].Count > 0)
         {
             for (int i = 0; i < beforeLineRendererObjects[currentTabNum].Count; i++)
@@ -201,6 +209,8 @@ public class BeamComponent : MonoBehaviour
         }
 
         beforeLineRendererObjects[currentTabNum].Clear();
+
+        Debug.Log(beforeLineRendererObjects[currentTabNum].Count);
 
         for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
@@ -217,6 +227,10 @@ public class BeamComponent : MonoBehaviour
             int differenceNum = (int)(line_RedererPos_List[i][1].magnitude / line_Difference.magnitude);
 
             GameObject lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
+
+            TestNum++;
+
+            lineRendererObj.name = TestNum.ToString();
 
             beforeLineRendererObjects[currentTabNum].Add(lineRendererObj);
 

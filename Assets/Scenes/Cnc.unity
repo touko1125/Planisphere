@@ -2124,7 +2124,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 695990683}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.91, y: 1.13, z: -1}
+  m_LocalPosition: {x: -0.997, y: 1.13, z: -1}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.2}
   m_Children:
   - {fileID: 842413376}
@@ -4782,6 +4782,8 @@ MonoBehaviour:
   - {fileID: 1909716068}
   beamComponent: {fileID: 1251835952}
   stageProduction: {fileID: 406018207}
+  lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
+    type: 3}
 --- !u!4 &1412241837
 Transform:
   m_ObjectHideFlags: 0

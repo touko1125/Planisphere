@@ -1363,6 +1363,10 @@ MonoBehaviour:
   - {fileID: 1965174951}
   beamComponent: {fileID: 2056730748}
   stageProduction: {fileID: 141208324}
+  lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
+    type: 3}
+  lineRendererMaterial: {fileID: 2100000, guid: f02ff5adabaa27b45946eff36143ce85,
+    type: 2}
 --- !u!4 &243927577
 Transform:
   m_ObjectHideFlags: 0
@@ -6282,7 +6286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
     type: 3}
-  planetManager: {fileID: 0}
+  planetManager: {fileID: 243927576}
   currentLineMaterial: {fileID: 2100000, guid: a8d1462e39132d047822689523bf26e1, type: 2}
   beforeLineMaterial: {fileID: 2100000, guid: cd63209521d30d7429032e988d2afafa, type: 2}
   currentBeamHitObjects: []
