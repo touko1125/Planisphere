@@ -134,8 +134,6 @@ public class BeamComponent : MonoBehaviour
 
         beemRay = new Ray(beemOriginPos,directionPos);
 
-        Debug.Log("bbbbb");
-
         //一番新しいところに描画位置を収納
         line_RedererPos_List.Add(new List<Vector3>());
 
@@ -152,11 +150,8 @@ public class BeamComponent : MonoBehaviour
         //ぶつかった場所を格納
         List<Vector3> rayHitPos = new List<Vector3>();
 
-        Debug.Log("beforeHit");
-
         if (Physics2D.Raycast(beemRay.origin, beemRay.direction).collider)
         {
-            Debug.Log("Hit!");
             foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction,Mathf.Infinity,1<<layerNum1|1<<layerNum2))
             {
                 Debug.Log(hit.transform.gameObject);
@@ -167,8 +162,6 @@ public class BeamComponent : MonoBehaviour
                     rayHitPos.Add(hit.point);
                 }
             }
-
-            Debug.Log("あたったかず"+rayHitObj.Count);
 
             if (rayHitObj.Count > 0)
             {
@@ -188,7 +181,6 @@ public class BeamComponent : MonoBehaviour
                     //鏡を通った後に縁に当たる
                     if (is_Reflected)
                     {
-                        Debug.Log("EdgeEnd");
                         //終点を縁に
                         line_RedererPos_List[line_RedererPos_List.Count - 1][1] = rayHitPos[0] - beemOriginPos;
                     }

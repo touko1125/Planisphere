@@ -9,7 +9,11 @@ public class PanelMoveManagement : MonoBehaviour
 {
     public bool isMoved;
 
+    public bool isCorrecting;
+
     public int TabNum;
+
+    public float angle;
 
     public GameObject previousTab;
     // Start is called before the first frame update
@@ -45,7 +49,7 @@ public class PanelMoveManagement : MonoBehaviour
         float angle2 = Mathf.Atan2(center_endTapPos_Vector.x,center_endTapPos_Vector.y) * Mathf.Rad2Deg;
 
         //微小角度差分
-        float angle = angle2 - angle1;
+        angle = angle2 - angle1;
 
         //角度分だけ回し続ける
         tabParent.transform.DOLocalRotate(
@@ -69,5 +73,27 @@ public class PanelMoveManagement : MonoBehaviour
 
         //効果音再生
         AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[0], AudioManager.Instance.AudioSources[0], Const.volume_SE, false);
+    }
+
+    public IEnumerator CorrectPanelRoatate(float angle,GameObject tabObj)
+    {
+        isCorrecting = true;
+
+        //効果音再生
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[1], AudioManager.Instance.AudioSources[0], Const.volume_SE, false);
+
+        //角度分だけ回し続ける
+        tabObj.transform.parent.DOLocalRotate(
+            new Vector3(tabObj.transform.localEulerAngles.x,
+                        tabObj.transform.localEulerAngles.y,
+                        tabObj.transform.localEulerAngles.z - angle)
+                        , 0.2f
+                        , RotateMode.FastBeyond360);
+
+        yield return new WaitForSeconds(0.5f);       
+
+        isMoved = false;
+
+        isCorrecting = false;
     }
 }

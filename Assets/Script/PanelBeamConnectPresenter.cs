@@ -26,6 +26,10 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
     private GameObject tapTab;
 
+    private float latestAngle;
+
+    private bool controlCorrect;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,6 +41,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
     {
         ObserveInput();
         ObserveProgressMovePanel();
+        ObserveCorrectRotate();
     }
 
     public void ObserveProgressMovePanel()
@@ -57,17 +62,40 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         if (beamComponent.isDrawLine) return;
 
-        Debug.Log("ddddd");
+        if (panelMovement.isCorrecting) return;
 
-        BeamSet(panelMovement.TabNum);
+        CorrectionRotate(-tapObj.transform.parent.localEulerAngles.z, tapObj);
 
-        panelMovement.isMoved = false;
+        controlCorrect = true;
     }
 
-    public void BeamSet(int TabNum)
+    public void ObserveCorrectRotate()
+    {
+        if (!controlCorrect) return;
+
+        if (panelMovement.isCorrecting) return;
+
+        BeamSet(latestAngle, panelMovement.TabNum);
+
+        controlCorrect = false;
+    }
+
+    public void CorrectionRotate(float angle,GameObject tapObj)
+    {
+        //15の倍数に補正
+        float nearlistAngle = Math.Abs(angle - ((int)(angle / 15)) * 15) < (15 / 2) ? ((int)(angle / 15)) * 15 : ((int)(angle / 15) - 1) * 15;
+
+        latestAngle = nearlistAngle;
+
+        IEnumerator correctPanelRotate = panelMovement.CorrectPanelRoatate(nearlistAngle, tapObj);
+
+        StartCoroutine(correctPanelRotate);
+    }
+
+    public void BeamSet(float angle,int TabNum)
     {
         //タブ位置からビーム発射位置にする調整
-        Vector3 direction = tapObj.transform.parent.transform.parent.transform.parent.position - tapObj.transform.position;
+        Vector3 direction = new Vector3(0,0,-1) - tapObj.transform.position;
 
         Vector3 rayOrigin = Vector3.zero;
 
@@ -75,10 +103,10 @@ public class PanelBeamConnectPresenter : MonoBehaviour
         switch (TabNum)
         {
             case 0:
-                rayOrigin = new Vector3(tapObj.transform.position.x + (direction / 17).x, tapObj.transform.position.y + (direction / 17).y, -1);
+                rayOrigin = new Vector3(panelMovement.previousTab.transform.position.x + (direction / 17).x, panelMovement.previousTab.transform.position.y + (direction / 17).y, -1);
                 break;
             case 1:
-                rayOrigin = new Vector3(tapObj.transform.position.x + (direction / 13).x, tapObj.transform.position.y + (direction / 13).y, -1);
+                rayOrigin = new Vector3(panelMovement.previousTab.transform.position.x + (direction / 13).x, panelMovement.previousTab.transform.position.y + (direction / 13).y, -1);
                 break;
         }
 
@@ -115,10 +143,6 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         if (tapTab.tag == "Tab")
         {
-            Debug.Log(tapTab);
-
-            Debug.Log(previousTapTab);
-
             if (previousTapTab != null)
             {
                 if (tapTab != previousTapTab)
