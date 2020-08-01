@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 using UnityEngine.SceneManagement;
+using TapClass;
 
 public class StageSelectManager : MonoBehaviour
 {
@@ -13,6 +14,12 @@ public class StageSelectManager : MonoBehaviour
 
     [SerializeField]
     private Image[] LoadPlanetImage;
+
+    [SerializeField]
+    private List<GameObject> stageSprites;
+
+    [SerializeField]
+    private GameObject universeSphere;
 
     private string NextSceneStr;
 
@@ -30,11 +37,25 @@ public class StageSelectManager : MonoBehaviour
 
     }
 
+
     public void PressStage(GameObject buttonObj)
     {
-        NextSceneStr = ((GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), buttonObj.name)).ToString();
+        NextSceneStr = buttonObj.name;
+
+        if (!isClearBeforeStage(NextSceneStr))
+        {
+            Debug.Log("すすめへんでー!");
+            return;
+        }
 
         StartCoroutine(SceneTransition());
+    }
+
+    public bool isClearBeforeStage(string SceneStr)
+    {
+        bool isClearBeforeStage= (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), SceneStr)<=PlayerPrefs.GetInt(Const.clearStageNumKey,-1)+1;
+
+        return isClearBeforeStage;
     }
 
     public IEnumerator SceneTransition()
@@ -67,6 +88,11 @@ public class StageSelectManager : MonoBehaviour
             LoadPlanetImage[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);
             yield return null;
         }
+    }
+
+    public Tap getTapInfo()
+    {
+        return InputManager.Instance.tapinfo;
     }
 }
 

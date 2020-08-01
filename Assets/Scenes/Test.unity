@@ -2361,6 +2361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDontDestroy: 1
   isClearGame: 0
+  clearStageNum: 0
 --- !u!4 &751991445
 Transform:
   m_ObjectHideFlags: 0
@@ -3542,7 +3543,7 @@ MonoBehaviour:
   - {fileID: 1875442491}
   - {fileID: 988387303}
   - {fileID: 807102292}
-  Panel: {fileID: 0}
+  Panel: {fileID: 1455980175}
   LoadUI: {fileID: 874267036}
   LoadPlanetImage:
   - {fileID: 1246840939}

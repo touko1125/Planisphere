@@ -656,7 +656,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMoved: 0
+  isCorrecting: 0
   TabNum: 0
+  angle: 0
   previousTab: {fileID: 0}
 --- !u!4 &205399083
 Transform:
@@ -2399,7 +2401,7 @@ MonoBehaviour:
   - {fileID: 1878562380}
   - {fileID: 1736448992}
   - {fileID: 245085247}
-  Panel: {fileID: 0}
+  Panel: {fileID: 1002410179}
   LoadUI: {fileID: 751465792}
   LoadPlanetImage:
   - {fileID: 1107884918}
@@ -2536,6 +2538,7 @@ MonoBehaviour:
   AudioSources: []
   AudioClips:
   - {fileID: 8300000, guid: ee8d92991721aeb4abfc09891f6b9afd, type: 3}
+  - {fileID: 8300000, guid: 5e3176026fe45054e998334d612eee59, type: 3}
 --- !u!4 &661502554
 Transform:
   m_ObjectHideFlags: 0
@@ -4901,6 +4904,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDontDestroy: 1
   isClearGame: 0
+  clearStageNum: 0
 --- !u!4 &1232721122
 Transform:
   m_ObjectHideFlags: 0

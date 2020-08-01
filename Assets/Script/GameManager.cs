@@ -79,10 +79,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         Argo
     }
 
+    public int clearStageNum;
+
     // Start is called before the first frame update
     void Start()
     {
-       
+        clearStageNum = PlayerPrefs.GetInt(Const.clearStageNumKey, -1);
     }
 
     // Update is called once per frame

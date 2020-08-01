@@ -166,6 +166,11 @@ public class StageProduction : MonoBehaviour
 
         async = SceneManager.LoadSceneAsync(NextSceneStr);
 
+        PlayerPrefs.SetInt(Const.clearStageNumKey
+     , (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), SceneManager.GetActiveScene().name));
+
+        PlayerPrefs.Save();
+
         GameManager.Instance.isClearGame = false;
 
         while (!async.isDone)
