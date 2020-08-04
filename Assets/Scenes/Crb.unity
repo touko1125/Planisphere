@@ -458,7 +458,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: CRV
+  m_text: CRB
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1366,18 +1366,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetList:
+  - {fileID: 1503875504}
+  - {fileID: 69894117}
   - {fileID: 1271252677}
   - {fileID: 1558563473}
-  - {fileID: 1392868275}
   - {fileID: 1635637567}
-  - {fileID: 69894117}
-  - {fileID: 1503875504}
+  - {fileID: 1392868275}
   - {fileID: 21881922}
   beamComponent: {fileID: 1246073692}
   stageProduction: {fileID: 1858525425}
   lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
     type: 3}
-  lineRendererMaterial: {fileID: 0}
+  lineRendererMaterial: {fileID: 2100000, guid: f02ff5adabaa27b45946eff36143ce85,
+    type: 2}
 --- !u!4 &334104874
 Transform:
   m_ObjectHideFlags: 0
@@ -5501,7 +5502,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1503875504}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.7, y: 1.24, z: -1}
+  m_LocalPosition: {x: 0.68, y: 1.24, z: -1}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.2}
   m_Children:
   - {fileID: 713084029}

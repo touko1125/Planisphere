@@ -90,6 +90,14 @@ public class BeamComponent : MonoBehaviour
         }
 
         currentBeamPlanetObjects[TabNum].Clear();
+
+        //片割れ
+        int anotherTabNum = TabNum == 0 ? 1 : 0;
+
+        for (int i = 0; i < currentBeamPlanetObjects[anotherTabNum].Count; i++)
+        {
+            currentBeamPlanetObjects[anotherTabNum][i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.surprise);
+        }
     }
 
     public void ResetLine()

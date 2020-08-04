@@ -4887,18 +4887,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetList:
-  - {fileID: 132491653}
+  - {fileID: 695990683}
+  - {fileID: 1116845461}
   - {fileID: 1113605592}
   - {fileID: 1116845461}
   - {fileID: 2051101907}
-  - {fileID: 1822295678}
-  - {fileID: 695990683}
   - {fileID: 1909716068}
+  - {fileID: 2051101907}
+  - {fileID: 132491653}
+  - {fileID: 1822295678}
   beamComponent: {fileID: 1251835952}
   stageProduction: {fileID: 406018207}
   lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
     type: 3}
-  lineRendererMaterial: {fileID: 0}
+  lineRendererMaterial: {fileID: 2100000, guid: f02ff5adabaa27b45946eff36143ce85,
+    type: 2}
 --- !u!4 &1412241837
 Transform:
   m_ObjectHideFlags: 0

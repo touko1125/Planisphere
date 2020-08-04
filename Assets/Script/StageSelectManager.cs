@@ -18,25 +18,100 @@ public class StageSelectManager : MonoBehaviour
     [SerializeField]
     private List<GameObject> stageSprites;
 
-    [SerializeField]
-    private GameObject universeSphere;
-
     private string NextSceneStr;
+
+    private bool isTransitionScene;
+
+    private GameObject canvasObj;
+
+    public Image stagePanel;
 
     private AsyncOperation async;
 
     // Start is called before the first frame update
     void Start()
     {
+        canvasObj = GameObject.Find("Canvas");
 
+        StartCoroutine(FillStageImage());
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        ObserveInputPanelMove();
     }
 
+    public void ObserveInputPanelMove()
+    {
+        if (isTransitionScene) return;
+
+        if (getTapInfo() == null) return;
+
+        if (!getTapInfo().is_tap) return;
+
+        RotateStagePanel(getTapInfo());
+    }
+
+    public IEnumerator FillStageImage()
+    {
+        Debug.Log("aa");
+        for(int i = 0; i < stageSprites.Count; i++)
+        {
+            if (i > GameManager.Instance.clearStageNum) yield break;
+
+            DOTween.To(() => stageSprites[i].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount
+                      ,(x) => stageSprites[i].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount = x
+                      ,1.0f, 0.9f);
+
+            yield return new WaitForSeconds(1.0f);
+        }
+
+        Debug.Log("ii");
+    }
+
+    public void RotateStagePanel(Tap tapInfo)
+    {
+        var canvas = canvasObj.GetComponent<Canvas>();
+
+        var canvasRectTransform = canvas.GetComponent<RectTransform>();
+
+        var stagePanelImage = canvasObj.transform.Find("StageImage").gameObject;
+
+        var stagePanelRectPos = stagePanelImage.GetComponent<RectTransform>();
+
+        //UI座標からスクリーン座標の変換
+        var stagePanelScreenPos = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, stagePanelRectPos.position);
+
+        var stagePanelWorldPos = Vector2.zero;
+
+        //スクリーン座標からワールド座標に変換
+        RectTransformUtility.ScreenPointToLocalPointInRectangle
+            (canvasRectTransform, stagePanelScreenPos, canvas.worldCamera, out stagePanelWorldPos);
+
+        //中心から初期タップ位置への差分
+        var center_startTapPos_Vector = tapInfo.start_tapPosition - stagePanelWorldPos;
+
+        //中心からちょっと移動したとこへの差分
+        var center_endTapPos_Vector = tapInfo.end_tapPosition - stagePanelWorldPos;
+
+        //初期タップ位置の中心角度取得
+        var angle1 = Mathf.Atan2(center_startTapPos_Vector.x, center_startTapPos_Vector.y) * Mathf.Rad2Deg;
+
+        //最終タップ位置の中心角度取得
+        var angle2 = Mathf.Atan2(center_endTapPos_Vector.x, center_endTapPos_Vector.y) * Mathf.Rad2Deg;
+
+        //微小角度差分
+        var angle = angle2 - angle1;
+
+        //角度分だけ回し続ける
+        stagePanelImage.transform.DOLocalRotate(
+            new Vector3(stagePanelImage.transform.localEulerAngles.x,
+                        stagePanelImage.transform.localEulerAngles.y,
+                        stagePanelImage.transform.localEulerAngles.z - angle*500)
+                        , 0.001f * ((tapInfo.end_tapPosition - tapInfo.start_tapPosition).magnitude)
+                        , RotateMode.FastBeyond360);    
+    }
 
     public void PressStage(GameObject buttonObj)
     {
@@ -60,6 +135,8 @@ public class StageSelectManager : MonoBehaviour
 
     public IEnumerator SceneTransition()
     {
+        isTransitionScene = true;
+
         //画像の表示
         DOTween.ToAlpha(() => LoadUI.color,
                         color => LoadUI.color = color,

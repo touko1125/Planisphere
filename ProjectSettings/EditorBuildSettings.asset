@@ -33,10 +33,10 @@ EditorBuildSettings:
     path: Assets/Scenes/Crb.unity
     guid: 34aaf681ea9fb4b459be3270fe5e184d
   - enabled: 1
-    path: Assets/Scenes/Crt.unity
+    path: Assets/Scenes/Crv.unity
     guid: 87240c743144285478a317b35c4b6203
   - enabled: 1
-    path: Assets/Scenes/Crv.unity
+    path: Assets/Scenes/Crt.unity
     guid: e85bdc0bec5c9cb4cb63d9a29eb41405
   - enabled: 1
     path: Assets/Scenes/Cyg.unity
@@ -48,7 +48,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Gem.unity
     guid: 3a233a9bf67fd7646a6bec48f47b5b5e
   - enabled: 1
-    path: Assets/Scenes/Her.unity
+    path: Assets/Scenes/Peg.unity
     guid: 5618fac796c894f4fa98aa99434227c6
   - enabled: 1
     path: Assets/Scenes/Lep.unity
@@ -63,7 +63,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Ori.unity
     guid: 2e60496903ee611468de0c7e7a676cae
   - enabled: 1
-    path: Assets/Scenes/Peg.unity
+    path: Assets/Scenes/Her.unity
     guid: a5f9de6d4f2fe084eb83c47580554a7c
   - enabled: 1
     path: Assets/Scenes/Sgr.unity

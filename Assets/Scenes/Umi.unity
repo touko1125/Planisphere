@@ -6566,17 +6566,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetList:
-  - {fileID: 1752880773}
   - {fileID: 1757813106}
   - {fileID: 1104470794}
+  - {fileID: 1752880773}
   - {fileID: 1751245919}
-  - {fileID: 1830660820}
-  - {fileID: 1744068537}
   - {fileID: 1762846131}
+  - {fileID: 1744068537}
+  - {fileID: 1830660820}
   beamComponent: {fileID: 1725976848}
   stageProduction: {fileID: 342231139}
-  lineRendererObjPrefab: {fileID: 0}
-  lineRendererMaterial: {fileID: 0}
+  lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
+    type: 3}
+  lineRendererMaterial: {fileID: 2100000, guid: f02ff5adabaa27b45946eff36143ce85,
+    type: 2}
 --- !u!4 &1915945268
 Transform:
   m_ObjectHideFlags: 0
