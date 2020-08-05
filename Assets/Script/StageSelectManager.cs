@@ -60,11 +60,11 @@ public class StageSelectManager : MonoBehaviour
         {
             if (i > GameManager.Instance.clearStageNum) yield break;
 
-            DOTween.To(() => stageSprites[i].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount
-                      ,(x) => stageSprites[i].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount = x
-                      ,1.0f, 0.9f);
+            int j = i;
 
-            yield return new WaitForSeconds(1.0f);
+            DOTween.To(() => stageSprites[j].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount
+                      ,(x) => stageSprites[j].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount = x
+                      ,1.0f, 0.9f);
         }
 
         Debug.Log("ii");

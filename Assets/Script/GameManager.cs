@@ -84,6 +84,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+
+    }
+
+    void Awake()
+    {
         clearStageNum = PlayerPrefs.GetInt(Const.clearStageNumKey, -1);
     }
 

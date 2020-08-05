@@ -30,5 +30,13 @@ public class CSVReader : SingletonMonoBehaviour<CSVReader>
         
     }
 
+    public string getCollectionTitle(int collectionNum)
+    {
+        return csvDateConstellationList[collectionNum][1];
+    }
 
+    public string getCollectionExplanation(int collectionNum)
+    {
+        return csvDateConstellationList[collectionNum][2];
+    }
 }
