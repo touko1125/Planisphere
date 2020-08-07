@@ -106,15 +106,17 @@ public class CollectionManager : MonoBehaviour
 
         for (int i = 3; i < popScreenChildImage.Count; i++)
         {
-            var component = popScreenChildImage[i];
+            //var component = popScreenChildImage[i];
 
-            DOTween.ToAlpha(() => component.GetComponent<Image>().color
-                            , color => component.GetComponent<Image>().color = color
+            int j = i;
+
+            DOTween.ToAlpha(() => popScreenChildImage[j].GetComponent<Image>().color
+                            , color => popScreenChildImage[j].GetComponent<Image>().color = color
                             , 1
                             , 0.2f);
 
-            DOTween.ToAlpha(() => component.GetComponent<TextMeshProUGUI>().color
-                            , color => component.GetComponent<TextMeshProUGUI>().color = color
+            DOTween.ToAlpha(() => popScreenChildImage[j].GetComponent<TextMeshProUGUI>().color
+                            , color => popScreenChildImage[j].GetComponent<TextMeshProUGUI>().color = color
                             , 1
                             , 0.2f);
         }

@@ -75,9 +75,11 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         if (panelMovement.isCorrecting) return;
 
-        BeamSet(latestAngle, panelMovement.TabNum);
-
         controlCorrect = false;
+
+        if (tapObj.tag == "CoverTab") return;
+
+        BeamSet(latestAngle, panelMovement.TabNum);
     }
 
     public void CorrectionRotate(float angle,GameObject tapObj)
@@ -132,7 +134,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         if (getTapInfo().tap_Obj == null) return;
 
-        if (getTapInfo().tap_Obj.tag != "Tab")
+        if (getTapInfo().tap_Obj.tag != "Tab" && getTapInfo().tap_Obj.tag != "CoverTab")
         {
             if (previousTapTab == null) return;
             panelMovement.RotateTab(getTapInfo(), previousTapTab);
@@ -141,7 +143,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         tapTab = getTapInfo().tap_Obj;
 
-        if (tapTab.tag == "Tab")
+        if (tapTab.tag == "Tab" || getTapInfo().tap_Obj.tag == "CoverTab")
         {
             if (previousTapTab != null)
             {

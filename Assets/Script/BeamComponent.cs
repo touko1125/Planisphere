@@ -294,13 +294,18 @@ public class BeamComponent : MonoBehaviour
         //一番最近の二個を消す
         line_RedererPos_List.RemoveAt(line_RedererPos_List.Count-1);
 
-        Debug.Log("Judge");
+        List<GameObject> inLineMirrorObj = new List<GameObject>();
 
         for(int i = 0; i < hitObjects.Count; i++)
         {
             Debug.Log(hitObjects[i]);
 
-            if (!currentBeamHitObjects.Contains(hitObjects[i])) currentBeamHitObjects.Add(hitObjects[i]);
+            if (!currentBeamHitObjects.Contains(hitObjects[i]))
+            {
+                currentBeamHitObjects.Add(hitObjects[i]);
+
+                if (hitObjects[i].GetComponent<HitObjComponent>().objType == GameManager.ObjType.Mirror) inLineMirrorObj.Add(hitObjects[i]);
+            }
         }
 
         //審査
@@ -318,6 +323,18 @@ public class BeamComponent : MonoBehaviour
 
                     break;
                 case GameManager.ObjType.Mirror:
+
+                    //線上に鏡が二個以上あるときの処理
+                    if (inLineMirrorObj.Count > 1)
+                    {
+                        //二個目以降の鏡
+                        if (inLineMirrorObj.IndexOf(hitObjects[i]) > 0)
+                        {
+                            hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
+
+                            break;
+                        }
+                    }
 
                     //鏡の表面裏面ともにビームが通っているかどうか
                     if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairMirror))
@@ -366,6 +383,18 @@ public class BeamComponent : MonoBehaviour
                     if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairMirror))
                     {
                         GameObject forwardMirror = hitObjects[hitObjects.IndexOf(hitObjects[i].GetComponent<HitObjComponent>().pairMirror)];
+
+                        //線上に鏡が二個以上あるときの処理
+                        if (inLineMirrorObj.Count > 1)
+                        {
+                            //二個目以降の鏡
+                            if (inLineMirrorObj.IndexOf(forwardMirror) > 0)
+                            {
+                                hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
+
+                                break;
+                            }
+                        }
 
                         if (hitObjects.IndexOf(forwardMirror) > hitObjects.IndexOf(hitObjects[i]))
                         {

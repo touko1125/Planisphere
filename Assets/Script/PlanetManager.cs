@@ -24,7 +24,7 @@ public class PlanetManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[2], AudioManager.Instance.AudioSourceObjects[1].GetComponent<AudioSource>(), 0.3f,true);
     }
 
     // Update is called once per frame
