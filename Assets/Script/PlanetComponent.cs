@@ -7,6 +7,8 @@ public class PlanetComponent : MonoBehaviour
     //個人情報
     public GameManager.PlanetFace planetFace;
     public GameManager.PlanetMode planetMode;
+    public int planetCount;
+    public float angle;
 
     private GameObject FaceParent;
     private GameObject currentFace;

@@ -112,6 +112,8 @@ public class PanelBeamConnectPresenter : MonoBehaviour
                 break;
         }
 
+        Debug.Log("BeamShot!!");
+
         //コルーチンの設定(最初はタブから対角線)
         beamComponent.shot_beam_coroutine=beamComponent.ShotBeam(rayOrigin,direction*Const.radius,TabNum);
         StartCoroutine(beamComponent.shot_beam_coroutine);

@@ -31,6 +31,9 @@ public class BeamComponent : MonoBehaviour
 
     public IEnumerator shot_beam_coroutine;
 
+    //ビーム検査コルーチン監視用
+    private int shot_beam_coroutineNum;
+
     private int currentTabNum;
 
     public bool isDrawLine;
@@ -136,6 +139,9 @@ public class BeamComponent : MonoBehaviour
         beemOriginPos = new Vector3(beemOriginPos.x, beemOriginPos.y, Const.rayDepth);
         directionPos = new Vector3(directionPos.x, directionPos.y,0);
 
+        Debug.Log(beemOriginPos);
+        Debug.Log(directionPos);
+
         //レイヤーの指定
         int layerNum1 = LayerMask.NameToLayer("BeamCollision");
         int layerNum2 = LayerMask.NameToLayer("Edge");
@@ -162,7 +168,6 @@ public class BeamComponent : MonoBehaviour
         {
             foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction,Mathf.Infinity,1<<layerNum1|1<<layerNum2))
             {
-                Debug.Log(hit.transform.gameObject);
                 //確認済みでなければ追加
                 if (!hit.transform.gameObject.GetComponent<HitObjComponent>().isChecked)
                 {
@@ -184,8 +189,6 @@ public class BeamComponent : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log(is_Reflected);
-
                     //鏡を通った後に縁に当たる
                     if (is_Reflected)
                     {
@@ -195,6 +198,13 @@ public class BeamComponent : MonoBehaviour
                 }
             }
         }
+
+        if(shot_beam_coroutineNum>0) shot_beam_coroutineNum--;
+
+        Debug.Log(shot_beam_coroutineNum);
+
+        //全てのビームの審査が終わるまで待つ
+        if (shot_beam_coroutineNum > 0) yield break; 
 
         twoBeforeLineRendererObjects[currentTabNum].Clear();
 
@@ -214,6 +224,10 @@ public class BeamComponent : MonoBehaviour
 
         for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
+            Debug.Log("Beam"+i+"番目"+line_RedererPos_List[i][0]);
+            Debug.Log("Beam" + i + "番目" + line_RedererPos_List[i][1]);
+
+
             //z軸の調整
             line_RedererPos_List[i][1] = new Vector3(line_RedererPos_List[i][1].x, line_RedererPos_List[i][1].y,0);
 
@@ -265,16 +279,15 @@ public class BeamComponent : MonoBehaviour
         {
             currentBeamHitObjects[i].GetComponent<HitObjComponent>().isChecked = false;
 
-            Debug.Log(currentBeamPlanetObjects[0]);
-
-            Debug.Log(currentBeamPlanetObjects[currentTabNum]);
-
             //今のビームで貫かれた星のリスト
             if (currentBeamHitObjects[i].GetComponent<HitObjComponent>().objType==GameManager.ObjType.Planet) currentBeamPlanetObjects[currentTabNum].Add(currentBeamHitObjects[i]);
         }
 
         //今から打つビームに当たった奴を入れる用のリセット
         currentBeamHitObjects.Clear();
+
+        //ビーム検査コルーチン監視用リストクリア
+        shot_beam_coroutineNum=0;
 
         line_RedererPos_List.Clear();
 
@@ -285,7 +298,11 @@ public class BeamComponent : MonoBehaviour
     {
         Vector3[] nextSetBeamPos = new Vector3[2];
 
+        //鏡を通っているか
         is_pass_Mirror = false;
+
+        //線の変更をすでにされているか
+        var isBendLine = false;
 
         //初期化
         nextSetBeamPos[0] = raystartPos;
@@ -314,6 +331,61 @@ public class BeamComponent : MonoBehaviour
             switch (hitObjects[i].GetComponent<HitObjComponent>().objType)
             {
                 case GameManager.ObjType.Planet:
+
+                    if (hitObjects[i].GetComponent<PlanetComponent>().planetMode != GameManager.PlanetMode.SinglePlanet)
+                    {
+                        var changedLine = new List<List<Vector3>>();
+
+                        if (!isBendLine)
+                        {
+                            Debug.Log("bbb");
+
+                            switch (hitObjects[i].GetComponent<PlanetComponent>().planetMode)
+                            {
+                                case GameManager.PlanetMode.DoublePlanet:
+                                    changedLine = getBendLine(hitObjects[i], hitPos[i], raystartPos, rayDirection);
+                                    break;
+                                case GameManager.PlanetMode.BlackHole:
+
+                                    break;
+                            }
+
+                            isBendLine = true;
+
+                            is_Reflected = true;
+
+                            Debug.Log(changedLine);
+
+                            //びっくりする
+                            hitObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.surprise);
+
+                            //チェック済み
+                            hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
+
+                            shot_beam_coroutineNum = changedLine.Count;
+
+                            Debug.Log("Beam" + line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
+                            Debug.Log("Beam" + line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
+
+                            for (int n = 0; n < changedLine.Count; n++)
+                            {
+                                nextSetBeamPos[0] = changedLine[n][0];
+                                nextSetBeamPos[1] = changedLine[n][1];
+
+                                Debug.Log(nextSetBeamPos[0]);
+                                Debug.Log(nextSetBeamPos[1]);
+
+                                //描画審査
+                                shot_beam_coroutine = ShotBeam(nextSetBeamPos[0], nextSetBeamPos[1], currentTabNum);
+
+                                StartCoroutine(shot_beam_coroutine);
+                            }
+
+                            Debug.Log("aaaa");
+
+                            yield break;
+                        }
+                    }
 
                     //びっくりする
                     hitObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.surprise);
@@ -361,19 +433,22 @@ public class BeamComponent : MonoBehaviour
                     //鏡の表面を通っていたら反射
                     if (is_pass_Mirror)
                     {
+                        //鏡に複数回当たれなくなるけどチェック付ける
+                        hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
+
+                        if (isBendLine) break;
+
                         is_Reflected = true;
 
                         //二回呼び出してたら二回lineRendererリストに追加されてたからくっしょん
                         var mirrorAngle = getMirrorAngleCalculation(hitObjects[i], hitPos[i], raystartPos, rayDirection);
 
+                        Debug.Log("Bend");
+
+                        isBendLine = true;
+
                         nextSetBeamPos[0] = mirrorAngle[0];
                         nextSetBeamPos[1] = mirrorAngle[1];
-
-                        Debug.Log(nextSetBeamPos[0]);
-                        Debug.Log(nextSetBeamPos[1]);
-
-                        //鏡に複数回当たれなくなるけどチェック付ける
-                        hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
                     }
 
                     break;
@@ -398,27 +473,34 @@ public class BeamComponent : MonoBehaviour
 
                         if (hitObjects.IndexOf(forwardMirror) > hitObjects.IndexOf(hitObjects[i]))
                         {
-                            //終点を障害物の位置に
-                            nextSetBeamPos[1] = hitPos[i] - raystartPos;
+                            if (!isBendLine)
+                            {
+                                Debug.Log("Bend");
+
+                                isBendLine = true;
+
+                                //終点を障害物の位置に
+                                nextSetBeamPos[1] = hitPos[i] - raystartPos;
+                            }
                         }
                     }
                     else
                     {
-                        //終点を障害物の位置に
-                        nextSetBeamPos[1] = hitPos[i] - raystartPos;
+                        if (!isBendLine)
+                        {
+                            isBendLine = true;
+
+                            Debug.Log("Bend");
+
+                            //終点を障害物の位置に
+                            nextSetBeamPos[1] = hitPos[i] - raystartPos;
+                        }
                     }
 
                     //鏡の背面に当たったことは次はなかったことに
                     hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
 
                     break;
-                //case GameManager.ObjType.Edge:
-
-                //    if (is_pass_Mirror)
-                //    {
-                //        //nextSetBeamPos[1] = hitPos[i] - raystartPos;
-                //    }
-                //    break;
             }
         }
 
@@ -431,6 +513,87 @@ public class BeamComponent : MonoBehaviour
         shot_beam_coroutine = ShotBeam(nextSetBeamPos[0],nextSetBeamPos[1],currentTabNum);
 
         StartCoroutine(shot_beam_coroutine);
+    }
+
+    public List<List<Vector3>> getBendLine(GameObject hitObj,Vector3 hitPos,Vector3 rayStartPos,Vector3 rayDirectionPos)
+    {
+        //一番新しいところに描画位置(ビーム始点からかがみまで)を収納
+        line_RedererPos_List.Add(new List<Vector3>());
+
+        //とりあえず現地点までの情報
+        line_RedererPos_List[line_RedererPos_List.Count - 1].Add(rayStartPos);
+        line_RedererPos_List[line_RedererPos_List.Count - 1].Add(hitPos-rayStartPos);
+
+        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
+
+        float currentAngle = Mathf.Atan2((hitPos-rayStartPos).x, (hitPos - rayStartPos).y) * Mathf.Rad2Deg;
+
+        int planetCount = hitObj.GetComponent<PlanetComponent>().planetCount;
+
+        bool isOdd = planetCount % 2 == 1;
+
+        Debug.Log("奇数"+isOdd);
+
+        Debug.Log(planetCount);
+
+        var bendTestLine=new List<List<Vector3>>();
+
+        int vectorNum=0;
+
+        for(int i = 0; i < planetCount / 2; i++)
+        {
+            float angleValue = hitObj.GetComponent<PlanetComponent>().angle*(i+1);
+
+            float angleRight=90-currentAngle+angleValue;
+
+            float angleLeft=90-currentAngle-angleValue;
+
+            Debug.Log(currentAngle);
+
+            Debug.Log(angleRight);
+
+            Debug.Log(angleLeft);
+
+            Vector3 rightVector = new Vector3(Mathf.Cos(angleRight * Mathf.Deg2Rad), Mathf.Sin(angleRight * Mathf.Deg2Rad),0)*3f;
+
+            Vector3 leftVector = new Vector3(Mathf.Cos(angleLeft * Mathf.Deg2Rad), Mathf.Sin(angleLeft * Mathf.Deg2Rad),0)*3f;
+
+            Debug.Log(rightVector);
+
+            Debug.Log(leftVector);
+
+            bendTestLine.Add(new List<Vector3>());
+
+            bendTestLine[vectorNum].Add(hitPos);
+
+            bendTestLine[vectorNum].Add(rightVector+hitPos);
+
+            vectorNum++;
+
+            bendTestLine.Add(new List<Vector3>());
+
+            bendTestLine[vectorNum].Add(hitPos);
+
+            bendTestLine[vectorNum].Add(leftVector+hitPos);
+
+            vectorNum++;
+        }
+
+        if(isOdd)
+        {
+            Vector3 centerVector = new Vector3(Mathf.Cos(currentAngle), Mathf.Sin(currentAngle))+(rayDirectionPos-rayStartPos);
+
+            List<Vector3> topVectorList=new List<Vector3>();
+
+            topVectorList.Add(hitPos);
+
+            topVectorList.Add(centerVector);
+
+            //先頭に挿入
+            bendTestLine.Insert((int)(planetCount/2),topVectorList);
+        }
+
+        return bendTestLine;
     }
 
     public Vector3[] getMirrorAngleCalculation(GameObject hitObj,Vector3 hitPos,Vector3 raystartPos,Vector3 rayDirection)
