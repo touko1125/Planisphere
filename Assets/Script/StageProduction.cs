@@ -15,6 +15,15 @@ public class StageProduction : MonoBehaviour
     private TextMeshProUGUI[] ClearTexts;
 
     [SerializeField]
+    private Image[] GameoverImages;
+
+    [SerializeField]
+    private TextMeshProUGUI[] GameoverTexts;
+
+    [SerializeField]
+    private GameObject ClockParent;
+
+    [SerializeField]
     private GameObject Panel;
 
     [SerializeField]
@@ -24,6 +33,8 @@ public class StageProduction : MonoBehaviour
     private Image[] LoadPlanetImage;
 
     private string NextSceneStr;
+
+    private float currentTime;
 
     private AsyncOperation async;
 
@@ -36,14 +47,34 @@ public class StageProduction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        CountTime();
     }
 
-    public IEnumerator ClearProduction(List<GameObject> planetObjects)
+    public void CountTime()
     {
-        for(int i = 0; i < planetObjects.Count; i++)
+        if (GameManager.Instance.isClearGame) return;
+
+        if (GameManager.Instance.isPauseGame) return;
+
+        if(currentTime > Const.limitedTime)
         {
-            planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.smile);
+            StartCoroutine(GameOverProduction());
+
+            GameManager.Instance.isClearGame = true;
+        }
+
+        currentTime += Time.deltaTime;
+
+        ClockParent.transform.localRotation = Quaternion.Euler(0, 0, 70 - (140 * (currentTime / Const.limitedTime)));
+    }
+
+    public IEnumerator GameOverProduction()
+    {
+        var planetManager = new PlanetManager();
+
+        for (int i = 0; i < planetManager.planetList.Count; i++)
+        {
+            planetManager.planetList[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.nomal);
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -53,9 +84,65 @@ public class StageProduction : MonoBehaviour
 
         for (int i = 0; i < ClearImages.Length; i++)
         {
+            ClearImages[i].raycastTarget = false;
+        }
+
+        for (int i = 0; i < GameoverImages.Length; i++)
+        {
+            var img = GameoverImages[i];
+
+            img.gameObject.SetActive(true);
+
+            img.raycastTarget = true;
+
+            //画像の表示
+            DOTween.ToAlpha(() => img.color,
+                            color => img.color = color,
+                            1,
+                            0.5f);
+        }
+
+        for (int i = 0; i < GameoverTexts.Length; i++)
+        {
+            var txt = GameoverTexts[i];
+
+            //テキストの表示
+            DOTween.ToAlpha(() => txt.color,
+                            color => txt.color = color,
+                            1,
+                            0.5f);
+        }
+    }
+
+    public IEnumerator ClearProduction(List<GameObject> planetObjects)
+    {
+        for(int i = 0; i < planetObjects.Count; i++)
+        {
+            planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.smile);
+        }
+
+        PlayerPrefs.SetInt(Const.clearStageNumKey
+,       (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), SceneManager.GetActiveScene().name));
+
+        PlayerPrefs.Save();
+
+        yield return new WaitForSeconds(0.5f);
+
+        //ゲームパネルの非表示
+        Panel.SetActive(false);
+
+        for (int i = 0; i < GameoverImages.Length; i++)
+        {
+            GameoverImages[i].raycastTarget = false;
+        }
+
+        for (int i = 0; i < ClearImages.Length; i++)
+        {
             var img = ClearImages[i];
 
             img.gameObject.SetActive(true);
+
+            img.raycastTarget = true;
 
             //画像の表示
             DOTween.ToAlpha(() => img.color,
@@ -139,6 +226,28 @@ public class StageProduction : MonoBehaviour
                             0.2f);
         }
 
+        for (int i = 0; i < GameoverImages.Length; i++)
+        {
+            var img = GameoverImages[i];
+
+            //画像の表示
+            DOTween.ToAlpha(() => img.color,
+                            color => img.color = color,
+                            0,
+                            0.2f);
+        }
+
+        for (int i = 0; i < GameoverTexts.Length; i++)
+        {
+            var txt = GameoverTexts[i];
+
+            //テキストの表示
+            DOTween.ToAlpha(() => txt.color,
+                            color => txt.color = color,
+                            0,
+                            0.2f);
+        }
+
         //画像の非表示
         DOTween.ToAlpha(() => buttonObj.color,
                         color => buttonObj.color = color,
@@ -165,11 +274,6 @@ public class StageProduction : MonoBehaviour
         }
 
         async = SceneManager.LoadSceneAsync(NextSceneStr);
-
-        PlayerPrefs.SetInt(Const.clearStageNumKey
-     , (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), SceneManager.GetActiveScene().name));
-
-        PlayerPrefs.Save();
 
         GameManager.Instance.isClearGame = false;
 

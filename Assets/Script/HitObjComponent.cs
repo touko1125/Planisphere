@@ -8,8 +8,8 @@ public class HitObjComponent : MonoBehaviour
 
     public bool isChecked;
 
-    //これが鏡の時にだけ使う
-    public GameObject pairMirror;
+    //これが鏡とブラックホールの時にだけ使う
+    public GameObject pairObj;
     // Start is called before the first frame update
     void Start()
     {

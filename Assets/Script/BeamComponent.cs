@@ -155,6 +155,9 @@ public class BeamComponent : MonoBehaviour
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(beemOriginPos);
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(directionPos);
 
+        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
+        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
+
         //Scene画面に描画
         Debug.DrawRay(beemRay.origin,beemRay.direction*Const.radius, Color.white, 5.0f);
 
@@ -201,14 +204,10 @@ public class BeamComponent : MonoBehaviour
 
         if(shot_beam_coroutineNum>0) shot_beam_coroutineNum--;
 
-        Debug.Log(shot_beam_coroutineNum);
-
         //全てのビームの審査が終わるまで待つ
         if (shot_beam_coroutineNum > 0) yield break; 
 
         twoBeforeLineRendererObjects[currentTabNum].Clear();
-
-        Debug.Log(twoBeforeLineRendererObjects[currentTabNum].Count);
 
         if (beforeLineRendererObjects[currentTabNum].Count > 0)
         {
@@ -220,12 +219,10 @@ public class BeamComponent : MonoBehaviour
 
         beforeLineRendererObjects[currentTabNum].Clear();
 
-        Debug.Log(beforeLineRendererObjects[currentTabNum].Count);
-
         for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
-            Debug.Log("Beam"+i+"番目"+line_RedererPos_List[i][0]);
-            Debug.Log("Beam" + i + "番目" + line_RedererPos_List[i][1]);
+            Debug.Log(i + "番目は" + line_RedererPos_List[i][0]);
+            Debug.Log(i + "番目は" + line_RedererPos_List[i][1]);
 
 
             //z軸の調整
@@ -313,15 +310,22 @@ public class BeamComponent : MonoBehaviour
 
         List<GameObject> inLineMirrorObj = new List<GameObject>();
 
+        List<GameObject> inLineBlackHole = new List<GameObject>();
+
         for(int i = 0; i < hitObjects.Count; i++)
         {
-            Debug.Log(hitObjects[i]);
+            Debug.Log(i +"番目は"+ hitObjects[i]);
 
             if (!currentBeamHitObjects.Contains(hitObjects[i]))
             {
                 currentBeamHitObjects.Add(hitObjects[i]);
 
                 if (hitObjects[i].GetComponent<HitObjComponent>().objType == GameManager.ObjType.Mirror) inLineMirrorObj.Add(hitObjects[i]);
+                if (hitObjects[i].GetComponent<HitObjComponent>().objType == GameManager.ObjType.Planet)
+                {
+                    if (hitObjects[i].GetComponent<PlanetComponent>().planetMode == GameManager.PlanetMode.BlackHoleOut
+                        || hitObjects[i].GetComponent<PlanetComponent>().planetMode == GameManager.PlanetMode.BlackHoleSafe) inLineBlackHole.Add(hitObjects[i]);
+                }
             }
         }
 
@@ -332,66 +336,74 @@ public class BeamComponent : MonoBehaviour
             {
                 case GameManager.ObjType.Planet:
 
-                    if (hitObjects[i].GetComponent<PlanetComponent>().planetMode != GameManager.PlanetMode.SinglePlanet)
-                    {
-                        var changedLine = new List<List<Vector3>>();
-
-                        if (!isBendLine)
-                        {
-                            Debug.Log("bbb");
-
-                            switch (hitObjects[i].GetComponent<PlanetComponent>().planetMode)
-                            {
-                                case GameManager.PlanetMode.DoublePlanet:
-                                    changedLine = getBendLine(hitObjects[i], hitPos[i], raystartPos, rayDirection);
-                                    break;
-                                case GameManager.PlanetMode.BlackHole:
-
-                                    break;
-                            }
-
-                            isBendLine = true;
-
-                            is_Reflected = true;
-
-                            Debug.Log(changedLine);
-
-                            //びっくりする
-                            hitObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.surprise);
-
-                            //チェック済み
-                            hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
-
-                            shot_beam_coroutineNum = changedLine.Count;
-
-                            Debug.Log("Beam" + line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
-                            Debug.Log("Beam" + line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
-
-                            for (int n = 0; n < changedLine.Count; n++)
-                            {
-                                nextSetBeamPos[0] = changedLine[n][0];
-                                nextSetBeamPos[1] = changedLine[n][1];
-
-                                Debug.Log(nextSetBeamPos[0]);
-                                Debug.Log(nextSetBeamPos[1]);
-
-                                //描画審査
-                                shot_beam_coroutine = ShotBeam(nextSetBeamPos[0], nextSetBeamPos[1], currentTabNum);
-
-                                StartCoroutine(shot_beam_coroutine);
-                            }
-
-                            Debug.Log("aaaa");
-
-                            yield break;
-                        }
-                    }
-
                     //びっくりする
                     hitObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.surprise);
 
                     //チェック済み
                     hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
+
+                    if (hitObjects[i].GetComponent<PlanetComponent>().planetMode != GameManager.PlanetMode.SinglePlanet)
+                    {
+                        if (!isBendLine)
+                        {
+                            for(int n = 0; n < inLineBlackHole.Count; n++)
+                            {
+                                Debug.Log(inLineBlackHole[n]);
+                            }
+
+                            switch (hitObjects[i].GetComponent<PlanetComponent>().planetMode)
+                            {
+                                case GameManager.PlanetMode.DoublePlanet:
+
+                                    yield return DoublePlanet(hitObjects[i],hitPos[i],raystartPos,rayDirection); 
+
+                                    yield break;
+                                case GameManager.PlanetMode.BlackHoleSafe:
+                                case GameManager.PlanetMode.BlackHoleOut:
+
+                                    hitObjects[i].GetComponent<HitObjComponent>().isChecked = true;
+
+                                    var isableBlackHoleBend = false;
+
+                                    //線上にブラックホールが二個以上あるときの処理
+                                    if (inLineBlackHole.Count > 0)
+                                    {
+                                        GameObject pairBlackHole = hitObjects[i].GetComponent<HitObjComponent>().pairObj;
+
+                                        Debug.Log(isBendLine);
+                                        //二個目以降のブラックホール
+                                        if (inLineBlackHole.Contains(pairBlackHole))
+                                        {
+                                            if (!isBendLine&&hitObjects[i].GetComponent<PlanetComponent>().planetMode == GameManager.PlanetMode.BlackHoleOut)
+                                            {
+                                                is_Reflected = false;
+
+                                                isBendLine = true;
+
+                                                //終点を障害物の位置に
+                                                nextSetBeamPos[1] = hitPos[i] - raystartPos;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            isableBlackHoleBend = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        isableBlackHoleBend = true;
+                                    }
+
+                                    if (!isBendLine && isableBlackHoleBend)
+                                    {
+                                        yield return BlackHole(hitObjects[i], hitPos[i], raystartPos, rayDirection);
+                                        yield break;
+                                    }
+
+                                    break;
+                            }
+                        }
+                    }
 
                     break;
                 case GameManager.ObjType.Mirror:
@@ -409,9 +421,9 @@ public class BeamComponent : MonoBehaviour
                     }
 
                     //鏡の表面裏面ともにビームが通っているかどうか
-                    if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairMirror))
+                    if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairObj))
                     {
-                        GameObject backMirror = hitObjects[hitObjects.IndexOf(hitObjects[i].GetComponent<HitObjComponent>().pairMirror)];
+                        GameObject backMirror = hitObjects[hitObjects.IndexOf(hitObjects[i].GetComponent<HitObjComponent>().pairObj)];
 
                         Debug.Log("Mirror");
 
@@ -455,9 +467,9 @@ public class BeamComponent : MonoBehaviour
                 case GameManager.ObjType.Obstacle:
 
                     //鏡の表面裏面ともにビームが通っているかどうか
-                    if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairMirror))
+                    if (hitObjects.Contains(hitObjects[i].GetComponent<HitObjComponent>().pairObj))
                     {
-                        GameObject forwardMirror = hitObjects[hitObjects.IndexOf(hitObjects[i].GetComponent<HitObjComponent>().pairMirror)];
+                        GameObject forwardMirror = hitObjects[hitObjects.IndexOf(hitObjects[i].GetComponent<HitObjComponent>().pairObj)];
 
                         //線上に鏡が二個以上あるときの処理
                         if (inLineMirrorObj.Count > 1)
@@ -476,6 +488,8 @@ public class BeamComponent : MonoBehaviour
                             if (!isBendLine)
                             {
                                 Debug.Log("Bend");
+
+                                is_Reflected = false;
 
                                 isBendLine = true;
 
@@ -513,6 +527,92 @@ public class BeamComponent : MonoBehaviour
         shot_beam_coroutine = ShotBeam(nextSetBeamPos[0],nextSetBeamPos[1],currentTabNum);
 
         StartCoroutine(shot_beam_coroutine);
+    }
+
+    public IEnumerator DoublePlanet(GameObject hitObject,Vector3 hitPos,Vector3 raystartPos,Vector3 rayDirection)
+    {
+        var nextSetBeamPos = new Vector3[2];
+
+        var changedLine = new List<List<Vector3>>();
+
+        changedLine = getBendLine(hitObject, hitPos, raystartPos, rayDirection);
+
+        is_Reflected = true;
+
+        shot_beam_coroutineNum = changedLine.Count;
+
+        for (int n = 0; n < changedLine.Count; n++)
+        {
+            nextSetBeamPos[0] = changedLine[n][0];
+            nextSetBeamPos[1] = changedLine[n][1];
+
+            //描画審査
+            shot_beam_coroutine = ShotBeam(nextSetBeamPos[0], nextSetBeamPos[1], currentTabNum);
+
+            StartCoroutine(shot_beam_coroutine);
+        }
+
+        Debug.Log("aaaa");
+
+        yield return new WaitForSeconds(0);
+    }
+
+    public IEnumerator BlackHole(GameObject hitObject, Vector3 hitPos, Vector3 raystartPos, Vector3 rayDirection)
+    {
+        var changedLine = new Vector3[2];
+
+        changedLine = getBendBlackHoleLine(hitObject, hitPos, raystartPos, rayDirection);
+
+        is_Reflected = true;
+
+        shot_beam_coroutine = ShotBeam(changedLine[0], changedLine[1], currentTabNum);
+
+        StartCoroutine(shot_beam_coroutine);
+
+        yield return new WaitForSeconds(0);
+    }
+
+    public Vector3[] getBendBlackHoleLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirectionPos)
+    {
+        //一番新しいところに描画位置(ビーム始点からかがみまで)を収納
+        line_RedererPos_List.Add(new List<Vector3>());
+
+        //とりあえず現地点までの情報
+        line_RedererPos_List[line_RedererPos_List.Count - 1].Add(rayStartPos);
+        line_RedererPos_List[line_RedererPos_List.Count - 1].Add(hitPos - rayStartPos);
+
+        var bendedLine = new Vector3[2];
+
+        var objCenter_hitPosVector = hitPos - hitObj.transform.position;
+
+        var direction_hitPoshitPosAngle = Vector3.Angle(objCenter_hitPosVector, -rayDirectionPos);
+
+        Debug.Log(direction_hitPoshitPosAngle);
+
+        var hitPos_ObjCenterAngle= Mathf.Atan2(-objCenter_hitPosVector.x,-objCenter_hitPosVector.y) * Mathf.Rad2Deg;
+
+        var angleValue = hitObj.GetComponent<PlanetComponent>().angle;
+
+        Debug.Log(Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), 0) * 0.1f, rayStartPos)
+            > Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.1f, rayStartPos));
+
+        //超苦肉の策　ビーム射出地点から離れた方向に曲がる
+        var reflectPos = Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((90-(hitPos_ObjCenterAngle+angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90-(hitPos_ObjCenterAngle+angleValue)) * Mathf.Deg2Rad), 0) * 0.15f,rayStartPos)
+            > Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.15f, rayStartPos)
+            ? hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), 0) * 0.15f
+            : hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.15f;
+
+        var directionNormarized = Vector3.Distance(new Vector3(-(reflectPos - hitObj.transform.position).y, (reflectPos - hitObj.transform.position).x).normalized*3f+reflectPos,rayStartPos)
+            < Vector3.Distance(new Vector3((reflectPos - hitObj.transform.position).y,-(reflectPos - hitObj.transform.position).x).normalized * 3f + reflectPos, rayStartPos)
+            ? new Vector3((reflectPos - hitObj.transform.position).y, -(reflectPos - hitObj.transform.position).x).normalized
+            : new Vector3(-(reflectPos - hitObj.transform.position).y, (reflectPos - hitObj.transform.position).x).normalized;
+
+        Debug.Log("方向単位ベクトル"+directionNormarized);
+
+        bendedLine[0] = reflectPos;
+        bendedLine[1] = reflectPos + directionNormarized*3f;
+
+        return bendedLine;
     }
 
     public List<List<Vector3>> getBendLine(GameObject hitObj,Vector3 hitPos,Vector3 rayStartPos,Vector3 rayDirectionPos)

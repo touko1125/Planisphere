@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
+using TapClass;
 
 
 public class CollectionManager : MonoBehaviour
@@ -19,6 +20,12 @@ public class CollectionManager : MonoBehaviour
     [SerializeField]
     private GameObject popUpScreen;
 
+    [SerializeField]
+    private GameObject CollectionParent;
+
+    [SerializeField]
+    private GameObject canvasObj;
+
     private bool isPop;
 
     // Start is called before the first frame update
@@ -30,7 +37,43 @@ public class CollectionManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        ObserveInput();
+    }
+
+    public void ObserveInput()
+    {
+        if (isPop) return;
+
+        if (getTapInfo() == null) return;
+
+        if (!getTapInfo().is_tap) return;
+
+        ScrollScreen(getTapInfo());
+    }
+
+    public void ScrollScreen(Tap tapInfo)
+    {
+        var deltaScrollVector = tapInfo.end_tapPosition - tapInfo.start_tapPosition;
+
+        var previousVector = CollectionParent.GetComponent<RectTransform>().localPosition;
+
+        var deltaScrollYPos = previousVector.y + deltaScrollVector.y * 300f<-350?-350: previousVector.y + deltaScrollVector.y * 300f > 1140 ? 1140 : previousVector.y + deltaScrollVector.y * 300f;
+
+        CollectionParent.GetComponent<RectTransform>().localPosition = new Vector3(previousVector.x,deltaScrollYPos, previousVector.z);
+    }
+
+    public Tap getTapInfo()
+    {
+        return InputManager.Instance.tapinfo;
+    }
+
+    public void PressCross()
+    {
+        if (!isPop) return;
+
+        StartCoroutine(PopDownCollectionScreen());
+
+        isPop = false;
     }
 
     public void PressCollection(GameObject buttonObj)
@@ -68,8 +111,85 @@ public class CollectionManager : MonoBehaviour
         Debug.Log("ii");
     }
 
+    public IEnumerator PopDownCollectionScreen()
+    {
+        List<GameObject> popScreenChildImage = new List<GameObject>();
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Back").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Forward").gameObject);
+
+        //恐ろしい感じ
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Name").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Planet").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Explanation").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack1").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Cross").gameObject);
+
+        popScreenChildImage[2].GetComponent<TextMeshProUGUI>().text = CSVReader.Instance.getCollectionTitle(getStageNum(collectionStr));
+
+        popScreenChildImage[4].GetComponent<TextMeshProUGUI>().text = CSVReader.Instance.getCollectionExplanation(getStageNum(collectionStr));
+
+        DOTween.ToAlpha(() => popScreenChildImage[3].GetComponent<Image>().color
+                           , color => popScreenChildImage[3].GetComponent<Image>().color = color
+                           , 0
+                           , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[2].GetComponent<TextMeshProUGUI>().color
+                           , color => popScreenChildImage[2].GetComponent<TextMeshProUGUI>().color = color
+                           , 0
+                           , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[4].GetComponent<TextMeshProUGUI>().color
+                           , color => popScreenChildImage[4].GetComponent<TextMeshProUGUI>().color = color
+                           , 0
+                           , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[5].GetComponent<Image>().color
+                          , color => popScreenChildImage[5].GetComponent<Image>().color = color
+                          , 0
+                          , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[6].GetComponent<Image>().color
+                          , color => popScreenChildImage[6].GetComponent<Image>().color = color
+                          , 0
+                          , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[7].GetComponent<Image>().color
+                          , color => popScreenChildImage[7].GetComponent<Image>().color = color
+                          , 0
+                          , 0.2f);
+
+        yield return new WaitForSeconds(0.3f);
+
+        for (int i = 0; i < popScreenChildImage.Count; i++)
+        {
+            var screen = popScreenChildImage[i];
+
+            screen.transform.DOScale(Vector3.zero, 0.4f);
+        }
+
+        yield return new WaitForSeconds(0.3f);
+
+        DOTween.ToAlpha(() => popUpScreen.GetComponent<Image>().color,
+                        color => popUpScreen.GetComponent<Image>().color = color,
+                        0,
+                        0.4f);
+
+        isPop = false;
+    }
+
     public IEnumerator PopUpCollectionScreen()
     {
+        isPop = true;
+
         DOTween.ToAlpha(() => popUpScreen.GetComponent<Image>().color,
                 color => popUpScreen.GetComponent<Image>().color = color,
                 1,
@@ -94,32 +214,53 @@ public class CollectionManager : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
+        //恐ろしい感じ
+
         popScreenChildImage.Add(popUpScreen.transform.Find("Name").gameObject);
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Planet").gameObject);
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Explanation").gameObject);
 
+        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack1").gameObject);
+
+        popScreenChildImage.Add(popUpScreen.transform.Find("Cross").gameObject);
+
         popScreenChildImage[2].GetComponent<TextMeshProUGUI>().text = CSVReader.Instance.getCollectionTitle(getStageNum(collectionStr));
 
         popScreenChildImage[4].GetComponent<TextMeshProUGUI>().text = CSVReader.Instance.getCollectionExplanation(getStageNum(collectionStr));
 
-        for (int i = 3; i < popScreenChildImage.Count; i++)
-        {
-            //var component = popScreenChildImage[i];
+        DOTween.ToAlpha(() => popScreenChildImage[3].GetComponent<Image>().color
+                           , color => popScreenChildImage[3].GetComponent<Image>().color = color
+                           , 1
+                           , 0.2f);
 
-            int j = i;
+        DOTween.ToAlpha(() => popScreenChildImage[2].GetComponent<TextMeshProUGUI>().color
+                           , color => popScreenChildImage[2].GetComponent<TextMeshProUGUI>().color = color
+                           , 1
+                           , 0.2f);
 
-            DOTween.ToAlpha(() => popScreenChildImage[j].GetComponent<Image>().color
-                            , color => popScreenChildImage[j].GetComponent<Image>().color = color
-                            , 1
-                            , 0.2f);
+        DOTween.ToAlpha(() => popScreenChildImage[4].GetComponent<TextMeshProUGUI>().color
+                           , color => popScreenChildImage[4].GetComponent<TextMeshProUGUI>().color = color
+                           , 1
+                           , 0.2f);
 
-            DOTween.ToAlpha(() => popScreenChildImage[j].GetComponent<TextMeshProUGUI>().color
-                            , color => popScreenChildImage[j].GetComponent<TextMeshProUGUI>().color = color
-                            , 1
-                            , 0.2f);
-        }
+        DOTween.ToAlpha(() => popScreenChildImage[5].GetComponent<Image>().color
+                          , color => popScreenChildImage[5].GetComponent<Image>().color = color
+                          , 1
+                          , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[6].GetComponent<Image>().color
+                          , color => popScreenChildImage[6].GetComponent<Image>().color = color
+                          , 1
+                          , 0.2f);
+
+        DOTween.ToAlpha(() => popScreenChildImage[7].GetComponent<Image>().color
+                          , color => popScreenChildImage[7].GetComponent<Image>().color = color
+                          , 1
+                          , 0.2f);
     }
 
     public int getStageNum(string stage)

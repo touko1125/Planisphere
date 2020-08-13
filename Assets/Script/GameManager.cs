@@ -8,7 +8,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         SinglePlanet,
         DoublePlanet,
-        BlackHole
+        BlackHoleSafe,
+        BlackHoleOut
     }
 
     public enum PlanetFace
@@ -27,6 +28,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 
     public bool isClearGame;
+
+    public bool isPauseGame;
 
     public enum Stage
     {

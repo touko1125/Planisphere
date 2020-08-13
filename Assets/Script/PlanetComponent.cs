@@ -10,14 +10,20 @@ public class PlanetComponent : MonoBehaviour
     public int planetCount;
     public float angle;
 
-    private GameObject FaceParent;
-    private GameObject currentFace;
+    private List<GameObject> FaceParent=new List<GameObject>();
+    private List<GameObject> currentFace=new List<GameObject>();
     // Start is called before the first frame update
     void Start()
     {
-        FaceParent = gameObject.transform.Find("Face").gameObject;
+        foreach(Transform child in this.gameObject.transform)
+        {
+            if (child.name == "Face")
+            {
+                FaceParent.Add(child.gameObject);
 
-        currentFace = FaceParent.transform.GetChild((int)planetFace).gameObject;
+                currentFace.Add(child.GetChild((int)planetFace).gameObject);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -28,15 +34,18 @@ public class PlanetComponent : MonoBehaviour
 
     public void ChangeFace(GameManager.PlanetFace face)
     {
-        //今の表情を非表示に
-        currentFace.SetActive(false);
+        for(int i = 0; i < FaceParent.Count; i++)
+        {
+            //今の表情を非表示に
+            currentFace[i].SetActive(false);
 
-        //個人情報の更新
-        planetFace = face;
+            //個人情報の更新
+            planetFace = face;
 
-        FaceParent.transform.GetChild((int)face).gameObject.SetActive(true);
+            FaceParent[i].transform.GetChild((int)face).gameObject.SetActive(true);
 
-        //新しい表情の登録
-        currentFace = FaceParent.transform.GetChild((int)face).gameObject;
+            //新しい表情の登録
+            currentFace[i] = FaceParent[i].transform.GetChild((int)face).gameObject;
+        }
     }
 }
