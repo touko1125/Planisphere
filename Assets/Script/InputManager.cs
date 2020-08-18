@@ -4,7 +4,7 @@ using UnityEngine;
 using TapClass;
 using UniRx;
 
-public class InputManager : SingletonMonoBehaviour<InputManager>
+public class InputManager :SingletonMonoBehaviour<InputManager>
 {
     public Tap tapinfo;
 

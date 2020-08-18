@@ -26,6 +26,14 @@ public class CollectionManager : MonoBehaviour
     [SerializeField]
     private GameObject canvasObj;
 
+    [SerializeField]
+    private GameObject lineRendererObjPrefab;
+
+    [SerializeField]
+    private Material lineRendererMaterial;
+
+    private List<GameObject> lineRendererObjects = new List<GameObject>();
+
     private bool isPop;
 
     // Start is called before the first frame update
@@ -111,6 +119,122 @@ public class CollectionManager : MonoBehaviour
         Debug.Log("ii");
     }
 
+    public void SetPlanetPos(GameObject planetObj)
+    {
+        var childPlanet = planetObj.transform.Find("planetObj").gameObject;
+
+        for(int i = 0; i < GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)].Count; i++)
+        {
+            var planetObject = Instantiate(childPlanet,Vector3.zero,Quaternion.identity);
+
+            Debug.Log(planetObject);
+
+            planetObject.transform.parent = canvasObj.transform;
+
+            planetObject.SetActive(true);
+
+            planetObject.GetComponent<RectTransform>().anchoredPosition = getWorldPosToAnchoredPos(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]);
+
+            Debug.Log(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]);
+        }
+
+        StartCoroutine(ConnectPlanet());
+    }
+
+    public int getCollectionStageNum(string collectionStr)
+    {
+        return (int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), collectionStr);
+    }
+
+    public Vector2 getWorldPosToAnchoredPos(Vector2 worldPos)
+    { 
+        //first you need the RectTransform component of your canvas
+        RectTransform CanvasRect = canvasObj.GetComponent<RectTransform>();
+
+        Vector2 ViewportPosition = Camera.main.WorldToViewportPoint(worldPos);
+        Vector2 WorldPos_ScreenPosition = new Vector2(
+            ((ViewportPosition.x * CanvasRect.sizeDelta.x) - (CanvasRect.sizeDelta.x * 0.5f)),
+            ((ViewportPosition.y * CanvasRect.sizeDelta.y) - (CanvasRect.sizeDelta.y * 0.5f)));
+
+
+        return WorldPos_ScreenPosition;
+    }
+
+    public IEnumerator ConnectPlanet()
+    {
+        lineRendererObjects.Clear();
+
+        List<Vector2> drawConnectLinePosList = new List<Vector2>();
+
+        for (int i = 0; i < GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)].Count; i++)
+        {
+            drawConnectLinePosList.Add(getWorldPosToAnchoredPos(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]));
+        }
+
+        //n個星があったらn-1個線を引く
+        for (int i = 0; i < drawConnectLinePosList.Count - 1; i++)
+        {
+
+            //線のベクトル取得
+            Vector2 lineVector = drawConnectLinePosList[i + 1] - drawConnectLinePosList[i];
+
+            //線のLineRendererの生成
+            GameObject lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
+
+            lineRendererObjects.Add(lineRendererObj);
+
+            LineRenderer lineRenderer = lineRendererObj.GetComponent<LineRenderer>();
+
+            lineRenderer.alignment = LineAlignment.TransformZ;
+
+            lineRenderer.material = lineRendererMaterial;
+
+            lineRenderer.material.color = new Color(1, 1, 1, 0);
+
+            lineRenderer.SetWidth(0.02f, 0.02f);
+
+            lineRenderer.textureMode = LineTextureMode.Tile;
+
+            Vector2 lineDifference = lineVector;
+
+            while (lineDifference.magnitude > 0.1f)
+            {
+                lineDifference = lineDifference / 2;
+            }
+
+            int differenceNum = (int)(lineVector.magnitude / lineDifference.magnitude);
+
+            for (int n = 0; n < differenceNum; n++)
+            {
+                lineRenderer.positionCount = n + 1;
+                lineRenderer.SetPosition(n, drawConnectLinePosList[i] + (lineDifference * n));
+            }
+        }
+
+        var waitTime = 0.5f;
+
+        for (int i = 0; i < lineRendererObjects.Count; i++)
+        {
+            //yield return StartCoroutine(FadeLine(line.GetComponent<LineRenderer>()));
+
+            var lineMaterial = lineRendererObjects[i].GetComponent<LineRenderer>().material;
+
+            Debug.Log(lineMaterial.color.a);
+
+            //LIneの表示
+            DOTween.ToAlpha(() => lineMaterial.color,
+                            color => lineMaterial.color = color,
+                            1,
+                            waitTime);
+
+            Debug.Log(lineMaterial.color.a);
+        }
+
+        yield return new WaitForSeconds(waitTime);
+
+        yield break;
+    }
+
     public IEnumerator PopDownCollectionScreen()
     {
         List<GameObject> popScreenChildImage = new List<GameObject>();
@@ -126,10 +250,6 @@ public class CollectionManager : MonoBehaviour
         popScreenChildImage.Add(popUpScreen.transform.Find("Planet").gameObject);
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Explanation").gameObject);
-
-        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack").gameObject);
-
-        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack1").gameObject);
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Cross").gameObject);
 
@@ -154,16 +274,6 @@ public class CollectionManager : MonoBehaviour
 
         DOTween.ToAlpha(() => popScreenChildImage[5].GetComponent<Image>().color
                           , color => popScreenChildImage[5].GetComponent<Image>().color = color
-                          , 0
-                          , 0.2f);
-
-        DOTween.ToAlpha(() => popScreenChildImage[6].GetComponent<Image>().color
-                          , color => popScreenChildImage[6].GetComponent<Image>().color = color
-                          , 0
-                          , 0.2f);
-
-        DOTween.ToAlpha(() => popScreenChildImage[7].GetComponent<Image>().color
-                          , color => popScreenChildImage[7].GetComponent<Image>().color = color
                           , 0
                           , 0.2f);
 
@@ -220,11 +330,9 @@ public class CollectionManager : MonoBehaviour
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Planet").gameObject);
 
+        SetPlanetPos(popUpScreen.transform.Find("Planet").gameObject);
+
         popScreenChildImage.Add(popUpScreen.transform.Find("Explanation").gameObject);
-
-        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack").gameObject);
-
-        popScreenChildImage.Add(popUpScreen.transform.Find("Thumbtack1").gameObject);
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Cross").gameObject);
 
@@ -251,20 +359,10 @@ public class CollectionManager : MonoBehaviour
                           , color => popScreenChildImage[5].GetComponent<Image>().color = color
                           , 1
                           , 0.2f);
-
-        DOTween.ToAlpha(() => popScreenChildImage[6].GetComponent<Image>().color
-                          , color => popScreenChildImage[6].GetComponent<Image>().color = color
-                          , 1
-                          , 0.2f);
-
-        DOTween.ToAlpha(() => popScreenChildImage[7].GetComponent<Image>().color
-                          , color => popScreenChildImage[7].GetComponent<Image>().color = color
-                          , 1
-                          , 0.2f);
     }
 
     public int getStageNum(string stage)
     {
-        return (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), stage);
+        return (int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), stage);
     }
 }

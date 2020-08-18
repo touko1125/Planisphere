@@ -128,7 +128,7 @@ public class StageSelectManager : MonoBehaviour
 
     public bool isClearBeforeStage(string SceneStr)
     {
-        bool isClearBeforeStage= (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), SceneStr)<=PlayerPrefs.GetInt(Const.clearStageNumKey,-1)+1;
+        bool isClearBeforeStage= (int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneStr)<=PlayerPrefs.GetInt(Const.clearStageNumKey,-1)+1;
 
         return isClearBeforeStage;
     }

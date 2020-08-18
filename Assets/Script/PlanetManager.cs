@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
 
 public class PlanetManager : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class PlanetManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[2], AudioManager.Instance.AudioSources[1], 0.5f,true);
+
     }
 
     // Update is called once per frame
@@ -41,7 +42,7 @@ public class PlanetManager : MonoBehaviour
 
         foreach(GameObject planet in planetList)
         {
-            if (planet.GetComponent<PlanetComponent>().planetFace != GameManager.PlanetFace.surprise) isAllPlanetSmile = false;
+            if (planet.GetComponent<PlanetComponent>().planetFace != Enum.PlanetFace.surprise) isAllPlanetSmile = false;
         }
 
         if (isAllPlanetSmile)
@@ -55,6 +56,13 @@ public class PlanetManager : MonoBehaviour
             IEnumerator clearProduction = stageProduction.ClearProduction(planetList);
 
             stageProduction.StartCoroutine(clearProduction);
+
+            for (int i = 0; i < planetList.Count; i++)
+            {
+                GameManager.Instance.planetPosList[(int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name)].Add(planetList[i].transform.position);
+            }
+
+            Debug.Log(GameManager.Instance.planetPosList[(int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name)].Count);
         }
     }
 
@@ -123,8 +131,6 @@ public class PlanetManager : MonoBehaviour
                             color => lineMaterial.color = color,
                             1,
                             waitTime);
-
-            Debug.Log(lineMaterial.color.a);
         }
 
         yield return new WaitForSeconds(waitTime);

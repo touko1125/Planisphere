@@ -28,6 +28,8 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
 
     virtual protected void Awake()
     {
+        Debug.Log(gameObject.name);
+
         if (!IsDontDestroy)
         {
             return;

@@ -72,7 +72,7 @@ public class PanelMoveManagement : MonoBehaviour
         if ((tap.end_tapPosition - tap.start_tapPosition).magnitude == 0) return;
 
         //効果音再生
-        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[0], AudioManager.Instance.AudioSources[0], Const.volume_SE, false);
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[0], AudioManager.Instance.AudioSources[0],0.1f, false);
     }
 
     public IEnumerator CorrectPanelRoatate(float angle,GameObject tabObj)

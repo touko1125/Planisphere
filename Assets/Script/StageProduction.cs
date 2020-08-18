@@ -74,7 +74,7 @@ public class StageProduction : MonoBehaviour
 
         for (int i = 0; i < planetManager.planetList.Count; i++)
         {
-            planetManager.planetList[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.nomal);
+            planetManager.planetList[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.nomal);
         }
 
         yield return new WaitForSeconds(0.5f);
@@ -118,13 +118,16 @@ public class StageProduction : MonoBehaviour
     {
         for(int i = 0; i < planetObjects.Count; i++)
         {
-            planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(GameManager.PlanetFace.smile);
+            planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.smile);
         }
 
-        PlayerPrefs.SetInt(Const.clearStageNumKey
-,       (int)(GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage), SceneManager.GetActiveScene().name));
+        if((int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name) > GameManager.Instance.clearStageNum)
+        {
+            PlayerPrefs.SetInt(Const.clearStageNumKey
+            ,(int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name));
 
-        PlayerPrefs.Save();
+            PlayerPrefs.Save();
+        }
 
         yield return new WaitForSeconds(0.5f);
 
@@ -166,7 +169,7 @@ public class StageProduction : MonoBehaviour
 
     public void PressTitle(Image buttonObj)
     {
-        NextSceneStr = "StageSelect";
+        NextSceneStr = "Collection";
 
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>(),
             buttonObj.gameObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>()));
@@ -174,9 +177,9 @@ public class StageProduction : MonoBehaviour
 
     public void PressNext(Image buttonObj)
     {
-        var currentSceneStr = (GameManager.Stage)System.Enum.Parse(typeof(GameManager.Stage),SceneManager.GetActiveScene().name);
+        var currentSceneStr = (Enum.Stage)System.Enum.Parse(typeof(Enum.Stage),SceneManager.GetActiveScene().name);
 
-        NextSceneStr = ((GameManager.Stage)System.Enum.ToObject(typeof(GameManager.Stage),(int)currentSceneStr+1)).ToString();
+        NextSceneStr = ((Enum.Stage)System.Enum.ToObject(typeof(Enum.Stage),(int)currentSceneStr+1)).ToString();
 
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.Find("Fill").gameObject.GetComponent<Image>(),
             buttonObj.gameObject.transform.Find("NEXT").gameObject.GetComponent<TextMeshProUGUI>()));

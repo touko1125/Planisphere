@@ -52,6 +52,8 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         tapObj = panelMovement.previousTab;
 
+        if (tapObj.tag == "CoverTab") return;
+
         //線のリセット
         beamComponent.ThinandDestroyLine(int.Parse(tapObj.name));
 

@@ -15,7 +15,8 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 
     public float volumeSE = 0.8f;
 
-    private void Awake()
+    // Start is called before the first frame update
+    void Start()
     {
         //要素の確保
         AudioSources = new AudioSource[AudioSourceObjects.Length];
@@ -27,12 +28,6 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 
         AudioSources[0].volume = volumeBGM;
         AudioSources[1].volume = volumeSE;
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
     }
 
     // Update is called once per frame

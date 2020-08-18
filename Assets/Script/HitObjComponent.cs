@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HitObjComponent : MonoBehaviour
 {
-    public GameManager.ObjType objType;
+    public Enum.ObjType objType;
 
     public bool isChecked;
 

@@ -2987,6 +2987,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ee8d92991721aeb4abfc09891f6b9afd, type: 3}
   - {fileID: 8300000, guid: 5e3176026fe45054e998334d612eee59, type: 3}
   - {fileID: 8300000, guid: a971d41c4ce0d38419c77cdda9ddb690, type: 3}
+  volumeBGM: 0.2
+  volumeSE: 0.8
 --- !u!4 &755739052
 Transform:
   m_ObjectHideFlags: 0
@@ -8246,11 +8248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f17940ff01f5c54f829f9f3b4b2efbc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsDontDestroy: 1
   settingScreen: {fileID: 512747368}
-  volumeBGM: 0.2
-  volumeSE: 0.8
-  isOpenSettingScreen: 0
 --- !u!114 &1535108841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8533,7 +8531,7 @@ GameObject:
   - component: {fileID: 1630813019}
   - component: {fileID: 1630813018}
   m_Layer: 0
-  m_Name: 0
+  m_Name: 2
   m_TagString: CoverTab
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10056,6 +10054,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDontDestroy: 1
   isClearGame: 0
+  isPauseGame: 0
   clearStageNum: 0
 --- !u!4 &1834089414
 Transform:
