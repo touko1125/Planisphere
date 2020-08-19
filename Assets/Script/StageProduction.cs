@@ -123,10 +123,7 @@ public class StageProduction : MonoBehaviour
 
         if((int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name) > GameManager.Instance.clearStageNum)
         {
-            PlayerPrefs.SetInt(Const.clearStageNumKey
-            ,(int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name));
-
-            PlayerPrefs.Save();
+            GameManager.Instance.SaveClearStageNum();
         }
 
         yield return new WaitForSeconds(0.5f);

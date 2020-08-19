@@ -54,6 +54,9 @@ public class BeamComponent : MonoBehaviour
 
     private int TestNum;
 
+    //よくない　爆発した時の最後の線
+    private int bombedLastLineNum;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -162,7 +165,7 @@ public class BeamComponent : MonoBehaviour
         Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
 
         //Scene画面に描画
-        Debug.DrawRay(beemRay.origin,beemRay.direction*Const.radius, Color.white, 5.0f);
+        Debug.DrawRay(beemRay.origin,beemRay.direction*Const.radius, Color.white,directionPos.magnitude);
 
         //ぶつかった奴を格納
         List<GameObject> rayHitObj=new List<GameObject>();
@@ -172,7 +175,7 @@ public class BeamComponent : MonoBehaviour
 
         if (Physics2D.Raycast(beemRay.origin, beemRay.direction).collider)
         {
-            foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction,Mathf.Infinity,1<<layerNum1|1<<layerNum2))
+            foreach (RaycastHit2D hit in Physics2D.RaycastAll(beemRay.origin, beemRay.direction,directionPos.magnitude,1<<layerNum1|1<<layerNum2))
             {
                 //確認済みでなければ追加
                 if (!hit.transform.gameObject.GetComponent<HitObjComponent>().isChecked)
@@ -201,6 +204,11 @@ public class BeamComponent : MonoBehaviour
                         //終点を縁に
                         line_RedererPos_List[line_RedererPos_List.Count - 1][1] = rayHitPos[0] - beemOriginPos;
                     }
+                    else
+                    {
+                        //爆発した時のすり抜けたビーム用(なぜかLineRendererPosListの一番最後じゃなかった)
+                        if (isDeltaLine) line_RedererPos_List[bombedLastLineNum][1] = rayHitPos[0] - line_RedererPos_List[bombedLastLineNum][0]; //終点を縁に
+                    }
                 }
             }
         }
@@ -209,9 +217,6 @@ public class BeamComponent : MonoBehaviour
 
         //全てのビームの審査が終わるまで待つ
         if (shot_beam_coroutineNum > 0) yield break; 
-
-        //爆発した時のすり抜けたビーム用
-        if(isDeltaLine) line_RedererPos_List[line_RedererPos_List.Count - 1][1] = rayHitPos[0] - beemOriginPos; //終点を縁に
 
         twoBeforeLineRendererObjects[currentTabNum].Clear();
 
@@ -225,12 +230,11 @@ public class BeamComponent : MonoBehaviour
 
         beforeLineRendererObjects[currentTabNum].Clear();
 
+        //応急処置　爆発以外はRenderingにこんなに入んないはず…
+        var waitPerBeam = line_RedererPos_List.Count > 50 ? 0 : 0.1f;
+
         for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
-            Debug.Log(i + "番目は" + line_RedererPos_List[i][0]);
-            Debug.Log(i + "番目は" + line_RedererPos_List[i][1]);
-
-
             //z軸の調整
             line_RedererPos_List[i][1] = new Vector3(line_RedererPos_List[i][1].x, line_RedererPos_List[i][1].y,0);
 
@@ -263,14 +267,14 @@ public class BeamComponent : MonoBehaviour
 
             for (int n = 0; n < differenceNum; n++)
             {
-                yield return new WaitForSeconds(0.02f);
+                yield return new WaitForSeconds(waitPerBeam/10);
                 lineRenderer.positionCount = n + 1;
 
                 lineRenderer.SetPosition(n, line_RedererPos_List[i][0] + line_Difference);
                 line_RedererPos_List[i][0] = line_RedererPos_List[i][0] + line_Difference;
             }
 
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(waitPerBeam);
         }
 
         //次のビームに備えて状態のリセット
@@ -616,6 +620,8 @@ public class BeamComponent : MonoBehaviour
 
         var firstRad = Mathf.Atan2((hitObj.transform.position-hitPos).x, (hitObj.transform.position-hitPos).y);
 
+        Debug.Log(firstRad*Mathf.Rad2Deg);
+
         //z軸の調整
         var prePos = new Vector3(hitPos.x,hitPos.y,Const.rayDepth);
         var centerPos = new Vector3(hitObj.transform.position.x,hitObj.transform.position.y,0);
@@ -627,7 +633,7 @@ public class BeamComponent : MonoBehaviour
         {
             var rad = Mathf.Deg2Rad*(i * (360 / Const.cireclePersantage));
 
-            var newPos = centerPos + new Vector3(Mathf.Cos(rad+firstRad), Mathf.Sin(rad+firstRad))*0.8f;
+            var newPos = centerPos + new Vector3(-Mathf.Sin(rad+firstRad), -Mathf.Cos(rad+firstRad))*0.8f;
 
             if (i == Const.cireclePersantage / 2) specialPos = newPos;
 
@@ -639,10 +645,12 @@ public class BeamComponent : MonoBehaviour
             prePos = newPos;
         }
 
+        bombedLastLineNum = Const.cireclePersantage + line_RedererPos_List.Count;
+
         bombedLine.Add(new List<Vector3>());
 
         bombedLine[bombedLine.Count - 1].Add(specialPos);
-        bombedLine[bombedLine.Count - 1].Add(rayDirectionPos-rayStartPos);
+        bombedLine[bombedLine.Count - 1].Add(rayDirectionPos-specialPos);
 
         isDeltaLine = true;
 

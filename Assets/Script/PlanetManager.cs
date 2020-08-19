@@ -62,7 +62,7 @@ public class PlanetManager : MonoBehaviour
                 GameManager.Instance.planetPosList[(int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name)].Add(planetList[i].transform.position);
             }
 
-            Debug.Log(GameManager.Instance.planetPosList[(int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name)].Count);
+            GameManager.Instance.SaveCollectionPlanetPos();
         }
     }
 

@@ -17,15 +17,28 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         clearStageNum = PlayerPrefs.GetInt(Const.clearStageNumKey, -1);
 
-        for (int i = 0; i < (int)Enum.Stage.Argo; i++)
-        {
-            planetPosList.Add(new List<Vector2>());
-        }
+        planetPosList = PlayerPrefsUtility.LoadMultidimensionalList<Vector2>(Const.planetCollectionPosKey);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void SaveClearStageNum()
+    {
+        PlayerPrefs.SetInt(Const.clearStageNumKey,clearStageNum);
+
+        PlayerPrefs.Save();
+    }
+
+    public void SaveCollectionPlanetPos()
+    {
+        PlayerPrefsUtility.SaveMultiDimensionalList<Vector2>(Const.planetCollectionPosKey,planetPosList);
+
+        var n = PlayerPrefsUtility.LoadMultidimensionalList<Vector2>(Const.planetCollectionPosKey);
+
+        Debug.Log(n.Count);
     }
 }

@@ -92,6 +92,8 @@ public class CollectionManager : MonoBehaviour
 
         if (!isClearBeforeStage(collectionStr)) return;
 
+        isPop = true;
+
         StartCoroutine(PopUpCollectionScreen());
     }
 
@@ -127,18 +129,18 @@ public class CollectionManager : MonoBehaviour
         {
             var planetObject = Instantiate(childPlanet,Vector3.zero,Quaternion.identity);
 
-            Debug.Log(planetObject);
+            planetObject.transform.parent = planetObj.transform;
 
-            planetObject.transform.parent = canvasObj.transform;
+            planetObject.transform.localScale=new Vector3(1, 1, 1);
 
             planetObject.SetActive(true);
 
-            planetObject.GetComponent<RectTransform>().anchoredPosition = getWorldPosToAnchoredPos(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]);
+            planetObject.GetComponent<RectTransform>().anchoredPosition = getWorldPosToAnchoredPos(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i])/Const.shrinkPersantage;
 
             Debug.Log(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]);
         }
 
-        StartCoroutine(ConnectPlanet());
+        //StartCoroutine(ConnectPlanet());
     }
 
     public int getCollectionStageNum(string collectionStr)
@@ -168,18 +170,21 @@ public class CollectionManager : MonoBehaviour
 
         for (int i = 0; i < GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)].Count; i++)
         {
-            drawConnectLinePosList.Add(getWorldPosToAnchoredPos(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]));
+            var drawPoint = new Vector3((GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i] / 5).x,(GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i] / 5).y+0.15f);
+
+            drawConnectLinePosList.Add(drawPoint);
         }
 
         //n個星があったらn-1個線を引く
         for (int i = 0; i < drawConnectLinePosList.Count - 1; i++)
         {
-
             //線のベクトル取得
             Vector2 lineVector = drawConnectLinePosList[i + 1] - drawConnectLinePosList[i];
 
             //線のLineRendererの生成
             GameObject lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
+
+            lineRendererObj.transform.localPosition = Vector3.zero;
 
             lineRendererObjects.Add(lineRendererObj);
 
@@ -191,7 +196,7 @@ public class CollectionManager : MonoBehaviour
 
             lineRenderer.material.color = new Color(1, 1, 1, 0);
 
-            lineRenderer.SetWidth(0.02f, 0.02f);
+            lineRenderer.SetWidth(1f, 1f);
 
             lineRenderer.textureMode = LineTextureMode.Tile;
 
@@ -298,7 +303,6 @@ public class CollectionManager : MonoBehaviour
 
     public IEnumerator PopUpCollectionScreen()
     {
-        isPop = true;
 
         DOTween.ToAlpha(() => popUpScreen.GetComponent<Image>().color,
                 color => popUpScreen.GetComponent<Image>().color = color,
