@@ -34,6 +34,8 @@ public class CollectionManager : MonoBehaviour
 
     private List<GameObject> lineRendererObjects = new List<GameObject>();
 
+    private List<GameObject> collectionPlanetObjects=new List<GameObject>();
+
     private bool isPop;
 
     // Start is called before the first frame update
@@ -125,9 +127,16 @@ public class CollectionManager : MonoBehaviour
     {
         var childPlanet = planetObj.transform.Find("planetObj").gameObject;
 
-        for(int i = 0; i < GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)].Count; i++)
+        for (int i = 0; i < GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)].Count; i++)
+        {
+            Debug.Log(getCollectionStageNum(collectionStr) +"番目の"+ i +"番目は"+ GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)][i]);
+        }
+
+        for (int i = 0; i < GameManager.Instance.planetPosList[getCollectionStageNum(collectionStr)].Count; i++)
         {
             var planetObject = Instantiate(childPlanet,Vector3.zero,Quaternion.identity);
+
+            collectionPlanetObjects.Add(planetObject);
 
             planetObject.transform.parent = planetObj.transform;
 
@@ -298,6 +307,13 @@ public class CollectionManager : MonoBehaviour
                         0,
                         0.4f);
 
+        for(int i = 0; i < collectionPlanetObjects.Count; i++)
+        {
+            Destroy(collectionPlanetObjects[i]);
+        }
+
+        collectionPlanetObjects.Clear();
+
         isPop = false;
     }
 
@@ -339,6 +355,13 @@ public class CollectionManager : MonoBehaviour
         popScreenChildImage.Add(popUpScreen.transform.Find("Explanation").gameObject);
 
         popScreenChildImage.Add(popUpScreen.transform.Find("Cross").gameObject);
+
+        for (int i = 0; i < popScreenChildImage.Count; i++)
+        {
+            var screen = popScreenChildImage[i];
+
+            screen.transform.DOScale(Vector3.one, 0f);
+        }
 
         popScreenChildImage[2].GetComponent<TextMeshProUGUI>().text = CSVReader.Instance.getCollectionTitle(getStageNum(collectionStr));
 

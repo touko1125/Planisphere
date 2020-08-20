@@ -206,6 +206,10 @@ public class BeamComponent : MonoBehaviour
                     }
                     else
                     {
+                        Debug.Log(bombedLastLineNum);
+
+                        Debug.Log(line_RedererPos_List.Count);
+
                         //爆発した時のすり抜けたビーム用(なぜかLineRendererPosListの一番最後じゃなかった)
                         if (isDeltaLine) line_RedererPos_List[bombedLastLineNum][1] = rayHitPos[0] - line_RedererPos_List[bombedLastLineNum][0]; //終点を縁に
                     }
@@ -317,8 +321,8 @@ public class BeamComponent : MonoBehaviour
         nextSetBeamPos[0] = raystartPos;
         nextSetBeamPos[1] = rayDirection;
 
-        //一番最近の二個を消す
-        line_RedererPos_List.RemoveAt(line_RedererPos_List.Count-1);
+        //爆発の微小変化を除きたい
+        if(rayDirection.magnitude>0.5f) line_RedererPos_List.RemoveAt(line_RedererPos_List.Count - 1);    //一番最近の二個を消す
 
         List<GameObject> inLineMirrorObj = new List<GameObject>();
 
@@ -629,18 +633,21 @@ public class BeamComponent : MonoBehaviour
         //ビームの入射位置の間反対のとこにあるやつ
         var specialPos = Vector3.zero;
 
-        for(int i = 0; i < Const.cireclePersantage; i++)
+        for(int i = 0; i < Const.cireclePersantage+1; i++)
         {
             var rad = Mathf.Deg2Rad*(i * (360 / Const.cireclePersantage));
 
-            var newPos = centerPos + new Vector3(-Mathf.Sin(rad+firstRad), -Mathf.Cos(rad+firstRad))*0.8f;
+            var newPos = centerPos + new Vector3(-Mathf.Sin(rad+firstRad), -Mathf.Cos(rad+firstRad))*hitObj.GetComponent<PlanetComponent>().angle;
 
             if (i == Const.cireclePersantage / 2) specialPos = newPos;
 
-            bombedLine.Add(new List<Vector3>());
+            if (i > 0)
+            {
+                bombedLine.Add(new List<Vector3>());
 
-            bombedLine[bombedLine.Count - 1].Add(prePos);
-            bombedLine[bombedLine.Count - 1].Add((newPos-prePos)*1.2f);
+                bombedLine[bombedLine.Count - 1].Add(prePos);
+                bombedLine[bombedLine.Count - 1].Add((newPos - prePos) * (1/ hitObj.GetComponent<PlanetComponent>().angle)*1.5f);
+            }
 
             prePos = newPos;
         }
@@ -696,9 +703,9 @@ public class BeamComponent : MonoBehaviour
 
             Debug.Log(angleLeft);
 
-            Vector3 rightVector = new Vector3(Mathf.Cos(angleRight * Mathf.Deg2Rad), Mathf.Sin(angleRight * Mathf.Deg2Rad), 0) * 3f;
+            Vector3 rightVector = new Vector3(Mathf.Cos(angleRight * Mathf.Deg2Rad), Mathf.Sin(angleRight * Mathf.Deg2Rad), 0) * 6f;
 
-            Vector3 leftVector = new Vector3(Mathf.Cos(angleLeft * Mathf.Deg2Rad), Mathf.Sin(angleLeft * Mathf.Deg2Rad), 0) * 3f;
+            Vector3 leftVector = new Vector3(Mathf.Cos(angleLeft * Mathf.Deg2Rad), Mathf.Sin(angleLeft * Mathf.Deg2Rad), 0) * 6f;
 
             Debug.Log(rightVector);
 

@@ -7404,11 +7404,11 @@ RectTransform:
   - {fileID: 1734327675}
   - {fileID: 1372804744}
   m_Father: {fileID: 1749714916}
-  m_RootOrder: 19
+  m_RootOrder: 20
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -50.467926, y: -203.99927}
+  m_AnchoredPosition: {x: -612, y: -413.99927}
   m_SizeDelta: {x: -20.495056, y: -20.941406}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &617723707
@@ -9218,7 +9218,7 @@ RectTransform:
   m_GameObject: {fileID: 772552260}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.099999994, y: 0.099999994, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1002068744}
   m_RootOrder: 7
@@ -9226,7 +9226,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -261, y: 431.99994}
-  m_SizeDelta: {x: -500, y: -1124}
+  m_SizeDelta: {x: -768, y: -1390}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &772552262
 MonoBehaviour:
@@ -9297,7 +9297,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
-  m_Maskable: 1
+  m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -14820,11 +14820,11 @@ RectTransform:
   - {fileID: 1221665888}
   - {fileID: 891423232}
   m_Father: {fileID: 1749714916}
-  m_RootOrder: 20
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -610.468, y: -413.99927}
+  m_AnchoredPosition: {x: -50.467926, y: -203.99927}
   m_SizeDelta: {x: -20.495056, y: -20.941406}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1339212387
@@ -18373,8 +18373,8 @@ RectTransform:
   - {fileID: 185667334}
   - {fileID: 780312803}
   - {fileID: 680983560}
-  - {fileID: 617723706}
   - {fileID: 1339212386}
+  - {fileID: 617723706}
   - {fileID: 1853530726}
   - {fileID: 2083356826}
   - {fileID: 1270845532}
@@ -19227,7 +19227,6 @@ MonoBehaviour:
   popUpScreen: {fileID: 1002068743}
   CollectionParent: {fileID: 1749714915}
   canvasObj: {fileID: 275001685}
-  parentObj: {fileID: 0}
   lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
     type: 3}
   lineRendererMaterial: {fileID: 2100000, guid: a8d1462e39132d047822689523bf26e1,

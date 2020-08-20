@@ -3325,12 +3325,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planetList:
-  - {fileID: 688187233}
-  - {fileID: 1461770052}
+  - {fileID: 1781143695}
   - {fileID: 581978732}
   - {fileID: 1552584142}
-  - {fileID: 1324661157}
+  - {fileID: 734047075}
+  - {fileID: 1492113565}
+  - {fileID: 2122434370}
+  - {fileID: 1492113565}
+  - {fileID: 1518037320}
   - {fileID: 1590376663}
+  - {fileID: 5445082}
+  - {fileID: 1590376663}
+  - {fileID: 1518037320}
+  - {fileID: 1324661157}
+  - {fileID: 581978732}
+  - {fileID: 1461770052}
+  - {fileID: 688187233}
   beamComponent: {fileID: 190096957}
   stageProduction: {fileID: 921378343}
   lineRendererObjPrefab: {fileID: 1993182201860733433, guid: 66d4c3a559a3973498927553e2393489,
@@ -5536,7 +5546,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.31499997
+  m_Radius: 0.6
 --- !u!114 &734047078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6259,10 +6269,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ClearImages:
   - {fileID: 1785517172}
-  - {fileID: 430284044}
-  - {fileID: 692238046}
-  - {fileID: 810690080}
-  - {fileID: 1713327579}
   - {fileID: 1180550773}
   - {fileID: 402252588}
   - {fileID: 123847058}
@@ -6273,7 +6279,6 @@ MonoBehaviour:
   - {fileID: 85377914}
   GameoverImages:
   - {fileID: 796837801}
-  - {fileID: 1447678047}
   - {fileID: 1262032989}
   - {fileID: 1122732658}
   GameoverTexts:
@@ -11404,6 +11409,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ee8d92991721aeb4abfc09891f6b9afd, type: 3}
   - {fileID: 8300000, guid: 5e3176026fe45054e998334d612eee59, type: 3}
   - {fileID: 8300000, guid: a971d41c4ce0d38419c77cdda9ddb690, type: 3}
+  volumeBGM: 0.2
+  volumeSE: 0.8
 --- !u!4 &1871121007
 Transform:
   m_ObjectHideFlags: 0
@@ -12858,6 +12865,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDontDestroy: 1
   isClearGame: 0
+  isPauseGame: 0
   clearStageNum: 0
 --- !u!4 &2034343095
 Transform:

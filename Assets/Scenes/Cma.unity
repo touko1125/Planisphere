@@ -2374,6 +2374,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ee8d92991721aeb4abfc09891f6b9afd, type: 3}
   - {fileID: 8300000, guid: 5e3176026fe45054e998334d612eee59, type: 3}
   - {fileID: 8300000, guid: a971d41c4ce0d38419c77cdda9ddb690, type: 3}
+  volumeBGM: 0.2
+  volumeSE: 0.8
 --- !u!4 &579697635
 Transform:
   m_ObjectHideFlags: 0
@@ -12428,10 +12430,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ClearImages:
   - {fileID: 1736720744}
-  - {fileID: 1130742843}
-  - {fileID: 939155747}
-  - {fileID: 1802902843}
-  - {fileID: 1715067415}
   - {fileID: 1421097104}
   - {fileID: 310361008}
   - {fileID: 1244492815}
@@ -12843,6 +12841,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDontDestroy: 1
   isClearGame: 0
+  isPauseGame: 0
   clearStageNum: 0
 --- !u!4 &2125634828
 Transform:
