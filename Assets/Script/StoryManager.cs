@@ -4,6 +4,7 @@ using UnityEngine;
 using StoryClass;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class StoryManager : MonoBehaviour
 {
@@ -28,37 +29,54 @@ public class StoryManager : MonoBehaviour
 
     private Image coverImage;
 
+    private GameObject storyObj;
+
     private TextMeshProUGUI messageText;
+
+    private bool isSetStory;
 
     // Start is called before the first frame update
     void Start()
     {
-        SetObjects();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        SetObjects();
         CheckStoryPlay();
     }
 
     public void SetObjects()
     {
+        if (isSetStory) return;
+
+        if (!CSVReader.Instance.isSetCsvDate) return;
+
         story = new Story(storyNumbers.ToArray(),storyType,storyUnlockNumber);
 
-        backGround = gameObject.transform.Find("Back").gameObject.GetComponent<Image>();
+        storyObj = gameObject.transform.Find("StoryObj").gameObject;
 
-        rightIcon = gameObject.transform.Find("IconRight").Find("Person").gameObject.GetComponent<Image>();
+        backGround = gameObject.transform.Find("StoryObj").Find("Back").gameObject.GetComponent<Image>();
 
-        leftIcon = gameObject.transform.Find("IconLeft").Find("Person").gameObject.GetComponent<Image>();
+        rightIcon = gameObject.transform.Find("StoryObj").Find("IconRight").Find("Person").gameObject.GetComponent<Image>();
 
-        coverImage = gameObject.transform.Find("Cover").GetComponent<Image>();
+        leftIcon = gameObject.transform.Find("StoryObj").Find("IconLeft").Find("Person").gameObject.GetComponent<Image>();
 
-        messageText = gameObject.transform.Find("Story").Find("storyText").gameObject.GetComponent<TextMeshProUGUI>();
+        coverImage = gameObject.transform.Find("StoryObj").Find("Cover").GetComponent<Image>();
+
+        messageText = gameObject.transform.Find("StoryObj").Find("Story").Find("storyText").gameObject.GetComponent<TextMeshProUGUI>();
+
+        isSetStory = true;
     }
 
     public void CheckStoryPlay()
     {
+        if (!isSetStory) return;
+
+        if (isPlayingStory) return;
+
         switch (story.story_Type)
         {
             //ホーム画面で再生　ある程度ステージが進んだら解放される
@@ -69,15 +87,23 @@ public class StoryManager : MonoBehaviour
                 break;
             //チュートリアルがないとこにこれは存在しない
             case Enum.StoryType.tutorial:
+                if (getCollectionStageNum(SceneManager.GetActiveScene().name) <= GameManager.Instance.clearStageNum) break;
                 StartCoroutine(PlayStory());
                 isPlayingStory = true;
                 break;
         }
     }
 
+    public int getCollectionStageNum(string collectionStr)
+    {
+        return (int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), collectionStr);
+    }
+
     public IEnumerator PlayStory()
     {
         GameManager.Instance.isPauseGame = true;
+
+        storyObj.SetActive(true);
 
         if (isPlayingStory) yield break;
 
@@ -144,9 +170,11 @@ public class StoryManager : MonoBehaviour
             yield return new WaitUntil(() => InputManager.Instance.tapinfo.is_tap);
         }
 
-        GameManager.Instance.isPauseGame = false;
+        storyObj.SetActive(false);
 
-        gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+
+        GameManager.Instance.isPauseGame = false;
     }
 
     public bool isStoryUnlocked()

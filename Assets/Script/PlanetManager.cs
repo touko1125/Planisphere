@@ -22,10 +22,13 @@ public class PlanetManager : MonoBehaviour
 
     private List<GameObject> lineRendererObjects = new List<GameObject>();
 
+    private GameObject coverObj;
     // Start is called before the first frame update
     void Start()
     {
+        //PlayerPrefs.DeleteAll();
 
+        coverObj = GameObject.Find("Cover");
     }
 
     // Update is called once per frame
@@ -50,6 +53,8 @@ public class PlanetManager : MonoBehaviour
             GameManager.Instance.isClearGame = true;
 
             beamComponent.ResetLine();
+
+            if(coverObj!=null) coverObj.SetActive(false);   //カバー消す
 
             yield return StartCoroutine(ConnectPlanet());
 

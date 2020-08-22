@@ -38,7 +38,5 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         PlayerPrefsUtility.SaveMultiDimensionalList<Vector2>(Const.planetCollectionPosKey,planetPosList);
 
         var n = PlayerPrefsUtility.LoadMultidimensionalList<Vector2>(Const.planetCollectionPosKey);
-
-        Debug.Log(n.Count);
     }
 }

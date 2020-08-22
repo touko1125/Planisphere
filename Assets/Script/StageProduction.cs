@@ -41,13 +41,23 @@ public class StageProduction : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        RaycastTarget(GameoverImages, false);
+
+        RaycastTarget(ClearImages, false);
     }
 
     // Update is called once per frame
     void Update()
     {
         CountTime();
+    }
+
+    public void RaycastTarget(Image[] objects,bool raycastTarget)
+    {
+        foreach(Image image in objects)
+        {
+            image.raycastTarget = raycastTarget;
+        }
     }
 
     public void CountTime()
@@ -77,23 +87,20 @@ public class StageProduction : MonoBehaviour
             planetManager.planetList[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.nomal);
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
+
+        RaycastTarget(GameoverImages, true);
+
+        RaycastTarget(ClearImages, false);
 
         //ゲームパネルの非表示
         Panel.SetActive(false);
-
-        for (int i = 0; i < ClearImages.Length; i++)
-        {
-            ClearImages[i].raycastTarget = false;
-        }
 
         for (int i = 0; i < GameoverImages.Length; i++)
         {
             var img = GameoverImages[i];
 
             img.gameObject.SetActive(true);
-
-            img.raycastTarget = true;
 
             //画像の表示
             DOTween.ToAlpha(() => img.color,
@@ -121,28 +128,27 @@ public class StageProduction : MonoBehaviour
             planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.smile);
         }
 
-        if((int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name) > GameManager.Instance.clearStageNum)
+        if ((int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name) > GameManager.Instance.clearStageNum)
         {
+            GameManager.Instance.clearStageNum = (int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name);
+
             GameManager.Instance.SaveClearStageNum();
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.3f);
+
+        RaycastTarget(GameoverImages, false);
+
+        RaycastTarget(ClearImages, true);
 
         //ゲームパネルの非表示
         Panel.SetActive(false);
-
-        for (int i = 0; i < GameoverImages.Length; i++)
-        {
-            GameoverImages[i].raycastTarget = false;
-        }
 
         for (int i = 0; i < ClearImages.Length; i++)
         {
             var img = ClearImages[i];
 
             img.gameObject.SetActive(true);
-
-            img.raycastTarget = true;
 
             //画像の表示
             DOTween.ToAlpha(() => img.color,

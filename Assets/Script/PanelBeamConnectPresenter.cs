@@ -48,17 +48,11 @@ public class PanelBeamConnectPresenter : MonoBehaviour
     {
         if (GameManager.Instance.isClearGame) return;
 
+        if (GameManager.Instance.isPauseGame) return;
+
         if (!panelMovement.isMoved) return;
 
         tapObj = panelMovement.previousTab;
-
-        if (tapObj.tag == "CoverTab") return;
-
-        //線のリセット
-        beamComponent.ThinandDestroyLine(int.Parse(tapObj.name));
-
-        //星の状態のリセット
-        beamComponent.RestPlanetState(int.Parse(tapObj.name));
 
         if (getTapInfo().is_tap) return;
 
@@ -67,6 +61,14 @@ public class PanelBeamConnectPresenter : MonoBehaviour
         if (panelMovement.isCorrecting) return;
 
         CorrectionRotate(-tapObj.transform.parent.localEulerAngles.z, tapObj);
+
+        if (tapObj.tag == "CoverTab") return;
+
+        //線のリセット
+        beamComponent.ThinandDestroyLine(int.Parse(tapObj.name));
+
+        //星の状態のリセット
+        beamComponent.RestPlanetState(int.Parse(tapObj.name));
 
         controlCorrect = true;
     }
@@ -124,6 +126,8 @@ public class PanelBeamConnectPresenter : MonoBehaviour
     public void ObserveInput()
     {
         if (GameManager.Instance.isClearGame) return;
+
+        if (GameManager.Instance.isPauseGame) return;
 
         if (beamComponent.isDrawLine) return;
 

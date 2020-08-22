@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : SingletonMonoBehaviour<AudioManager>
 {
@@ -28,12 +29,28 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 
         AudioSources[0].volume = volumeBGM;
         AudioSources[1].volume = volumeSE;
+
+        PlayBGM();
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void PlayBGM()
+    {
+        switch (SceneManager.GetActiveScene().name)
+        {
+            case "Collection":
+
+                return;
+            case "Home":
+                return;
+        }
+
+        PlayAudio(AudioClips[2], AudioSources[0], 0.4f, true);
     }
 
     public void ChangeVolume(float volume,int audioSourceNum)
@@ -49,6 +66,11 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
                 break;
         }
 ;   }
+
+    public void StopAudio(AudioSource audioSource)
+    {
+        audioSource.Stop();
+    }
 
     public void PlayAudio(AudioClip audioClip,AudioSource audioSource,float volume,bool is_loop)
     {

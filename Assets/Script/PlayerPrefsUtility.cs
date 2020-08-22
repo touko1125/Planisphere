@@ -141,8 +141,6 @@ public static class PlayerPrefsUtility
 
     private static string SerializeVector2<T>(T vec)
     {
-        Debug.Log(vec);
-        Debug.Log(JsonUtility.ToJson(vec));
         return JsonUtility.ToJson(vec);
     }
 

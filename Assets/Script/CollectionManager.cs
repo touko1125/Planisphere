@@ -42,6 +42,8 @@ public class CollectionManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(FillCollectionImage());
+
+        AudioManager.Instance.StopAudio(AudioManager.Instance.AudioSources[0]);
     }
 
     // Update is called once per frame

@@ -16,6 +16,7 @@ public class PanelMoveManagement : MonoBehaviour
     public float angle;
 
     public GameObject previousTab;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -66,13 +67,13 @@ public class PanelMoveManagement : MonoBehaviour
         previousTab = tapTab;
 
         //再生中でなければ
-        if (AudioManager.Instance.AudioSources[0].isPlaying) return;
+        if (AudioManager.Instance.AudioSources[1].isPlaying) return;
 
         //動きなし
         if ((tap.end_tapPosition - tap.start_tapPosition).magnitude == 0) return;
 
         //効果音再生
-        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[0], AudioManager.Instance.AudioSources[0],0.1f, false);
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[0], AudioManager.Instance.AudioSources[1],0.1f, false);
     }
 
     public IEnumerator CorrectPanelRoatate(float angle,GameObject tabObj)
@@ -80,7 +81,7 @@ public class PanelMoveManagement : MonoBehaviour
         isCorrecting = true;
 
         //効果音再生
-        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[1], AudioManager.Instance.AudioSources[0], Const.volume_SE, false);
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[1], AudioManager.Instance.AudioSources[1], Const.volume_SE, false);
 
         //角度分だけ回し続ける
         tabObj.transform.parent.DOLocalRotate(

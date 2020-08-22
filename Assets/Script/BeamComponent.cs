@@ -145,8 +145,8 @@ public class BeamComponent : MonoBehaviour
         beemOriginPos = new Vector3(beemOriginPos.x, beemOriginPos.y, Const.rayDepth);
         directionPos = new Vector3(directionPos.x, directionPos.y,0);
 
-        Debug.Log(beemOriginPos);
-        Debug.Log(directionPos);
+        //Debug.Log(beemOriginPos);
+        //Debug.Log(directionPos);
 
         //レイヤーの指定
         int layerNum1 = LayerMask.NameToLayer("BeamCollision");
@@ -161,8 +161,8 @@ public class BeamComponent : MonoBehaviour
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(beemOriginPos);
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(directionPos);
 
-        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
-        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
+        //Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
+        //Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
 
         //Scene画面に描画
         Debug.DrawRay(beemRay.origin,beemRay.direction*Const.radius, Color.white,directionPos.magnitude);
@@ -211,7 +211,12 @@ public class BeamComponent : MonoBehaviour
                         Debug.Log(line_RedererPos_List.Count);
 
                         //爆発した時のすり抜けたビーム用(なぜかLineRendererPosListの一番最後じゃなかった)
-                        if (isDeltaLine) line_RedererPos_List[bombedLastLineNum][1] = rayHitPos[0] - line_RedererPos_List[bombedLastLineNum][0]; //終点を縁に
+                        if (isDeltaLine)
+                        {
+                            Debug.Log(line_RedererPos_List[bombedLastLineNum][1]);
+
+                            line_RedererPos_List[bombedLastLineNum][1] = rayHitPos[0] - line_RedererPos_List[bombedLastLineNum][0]; //終点を縁に
+                        }
                     }
                 }
             }
@@ -656,6 +661,10 @@ public class BeamComponent : MonoBehaviour
 
         bombedLine.Add(new List<Vector3>());
 
+        Debug.Log(specialPos);
+
+        Debug.Log(rayDirectionPos);
+
         bombedLine[bombedLine.Count - 1].Add(specialPos);
         bombedLine[bombedLine.Count - 1].Add(rayDirectionPos-specialPos);
 
@@ -730,7 +739,7 @@ public class BeamComponent : MonoBehaviour
 
         if (isOdd)
         {
-            Vector3 centerVector = new Vector3(Mathf.Cos(currentAngle), Mathf.Sin(currentAngle)) + (rayDirectionPos - rayStartPos);
+            Vector3 centerVector =rayDirectionPos - rayStartPos;
 
             List<Vector3> topVectorList = new List<Vector3>();
 
@@ -783,7 +792,7 @@ public class BeamComponent : MonoBehaviour
         Debug.Log("方向単位ベクトル"+directionNormarized);
 
         bendedLine[0] = reflectPos;
-        bendedLine[1] = reflectPos + directionNormarized*3f;
+        bendedLine[1] = reflectPos + directionNormarized*10f;
 
         return bendedLine;
     }

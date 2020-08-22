@@ -11,6 +11,8 @@ public class CSVReader : SingletonMonoBehaviour<CSVReader>
 
     private List<List<string[]>> csvDateList = new List<List<string[]>>();
 
+    public bool isSetCsvDate;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +44,8 @@ public class CSVReader : SingletonMonoBehaviour<CSVReader>
                 csvDateList[i].Add(line.Split(','));
             }
         }
+
+        isSetCsvDate = true;
     }
 
     public string getCollectionTitle(int collectionNum)

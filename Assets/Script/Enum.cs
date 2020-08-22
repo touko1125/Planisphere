@@ -39,13 +39,13 @@
 
     public enum Stage
     {
-        Cmi,
-        Tri,
+        Cmi,    //tutorial1
+        Tri,    //tutorisl2
         Cyg,
         Del,
         Cnc,
         Crt,
-        Crv,
+        Crv,    //tutorial3
         Crb,
         Cep,
         Sgr,
@@ -53,23 +53,23 @@
         Lyra,
         Umi,
         Cas,
-        Gem,
+        Gem,    //tutorial4
         Ori,
         Her,
         Peg,
         Cra,
         Cma,
         Uma,
-        Aur,
-        Lup,
-        Psc,
+        Aur,    //turorial5
+        Lup,    //順番要検討
+        Psc,    
         Cet,
         Dra,
         Cen,
-        Ari,
+        Ari,    //順番要検討まじで謎
         Leo,
         And,
-        Aql,
+        Aql,    //tutorial6
         Tau,
         Oph,
         Sge,
@@ -79,7 +79,7 @@
         Vir,
         Boo,
         Lib,
-        Cap,
+        Cap,    //tutorial7
         Agr,
         Per,
         Eri,
