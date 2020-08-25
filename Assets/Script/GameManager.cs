@@ -33,6 +33,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         PlayerPrefs.Save();
     }
 
+    public void UnloadScene(string sceneName)
+    {
+        Debug.Log("aaaa");
+
+        Application.UnloadLevel(sceneName);
+        Resources.UnloadUnusedAssets();
+    }
+
     public void SaveCollectionPlanetPos()
     {
         PlayerPrefsUtility.SaveMultiDimensionalList<Vector2>(Const.planetCollectionPosKey,planetPosList);

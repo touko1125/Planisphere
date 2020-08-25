@@ -31,7 +31,7 @@ public class StageSelectManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        canvasObj = GameObject.Find("Canvas");
+        canvasObj = GameObject.Find("StageSelectCanvas");
 
         StartCoroutine(FillStageImage());
     }

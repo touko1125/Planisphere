@@ -69,7 +69,7 @@ public class CollectionManager : MonoBehaviour
 
         var previousVector = CollectionParent.GetComponent<RectTransform>().localPosition;
 
-        var deltaScrollYPos = previousVector.y + deltaScrollVector.y * 300f<-350?-350: previousVector.y + deltaScrollVector.y * 300f > 1140 ? 1140 : previousVector.y + deltaScrollVector.y * 300f;
+        var deltaScrollYPos = previousVector.y + deltaScrollVector.y * 100f<-350?-350: previousVector.y + deltaScrollVector.y * 100f > 1140 ? 1140 : previousVector.y + deltaScrollVector.y * 100f;
 
         CollectionParent.GetComponent<RectTransform>().localPosition = new Vector3(previousVector.x,deltaScrollYPos, previousVector.z);
     }

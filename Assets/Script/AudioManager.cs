@@ -41,16 +41,17 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 
     public void PlayBGM()
     {
-        switch (SceneManager.GetActiveScene().name)
-        {
-            case "Collection":
+        //switch (SceneManager.GetActiveScene().name)
+        //{
+        //    case "Collection":
 
-                return;
-            case "Home":
-                return;
-        }
+        //        return;
+        //    case "Home":
 
-        PlayAudio(AudioClips[2], AudioSources[0], 0.4f, true);
+        //        return;
+        //}
+
+        PlayAudio(AudioClips[4], AudioSources[0], 0.4f, true);
     }
 
     public void ChangeVolume(float volume,int audioSourceNum)
@@ -76,6 +77,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
     {
         audioSource.volume = volume;
         audioSource.loop = is_loop;
-        audioSource.PlayOneShot(audioClip);
+        audioSource.clip = audioClip;
+        audioSource.Play();
     }
 }

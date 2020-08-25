@@ -172,7 +172,9 @@ public class StageProduction : MonoBehaviour
 
     public void PressTitle(Image buttonObj)
     {
-        NextSceneStr = "Collection";
+        NextSceneStr = "Home";
+
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[3], AudioManager.Instance.AudioSources[1], AudioManager.Instance.volumeSE, false);
 
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>(),
             buttonObj.gameObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>()));
@@ -184,6 +186,8 @@ public class StageProduction : MonoBehaviour
 
         NextSceneStr = ((Enum.Stage)System.Enum.ToObject(typeof(Enum.Stage),(int)currentSceneStr+1)).ToString();
 
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[3], AudioManager.Instance.AudioSources[1], AudioManager.Instance.volumeSE, false);
+
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.Find("Fill").gameObject.GetComponent<Image>(),
             buttonObj.gameObject.transform.Find("NEXT").gameObject.GetComponent<TextMeshProUGUI>()));
     }
@@ -193,6 +197,8 @@ public class StageProduction : MonoBehaviour
         var currentSceneStr = SceneManager.GetActiveScene().name;
 
         NextSceneStr = currentSceneStr;
+
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[3], AudioManager.Instance.AudioSources[1], AudioManager.Instance.volumeSE, false);
 
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>(),
            buttonObj.gameObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>()));

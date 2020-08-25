@@ -52,8 +52,6 @@ public class BeamComponent : MonoBehaviour
     //最終的に描画するときに使用
     private List<List<Vector3>> line_RedererPos_List = new List<List<Vector3>>();
 
-    private int TestNum;
-
     //よくない　爆発した時の最後の線
     private int bombedLastLineNum;
 
@@ -161,6 +159,8 @@ public class BeamComponent : MonoBehaviour
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(beemOriginPos);
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(directionPos);
 
+        Debug.Log("描く線の数は"+line_RedererPos_List.Count);
+
         //Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][0]);
         //Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
 
@@ -206,17 +206,8 @@ public class BeamComponent : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log(bombedLastLineNum);
-
-                        Debug.Log(line_RedererPos_List.Count);
-
                         //爆発した時のすり抜けたビーム用(なぜかLineRendererPosListの一番最後じゃなかった)
-                        if (isDeltaLine)
-                        {
-                            Debug.Log(line_RedererPos_List[bombedLastLineNum][1]);
-
-                            line_RedererPos_List[bombedLastLineNum][1] = rayHitPos[0] - line_RedererPos_List[bombedLastLineNum][0]; //終点を縁に
-                        }
+                        if (isDeltaLine) line_RedererPos_List[bombedLastLineNum][1] = rayHitPos[0] - line_RedererPos_List[bombedLastLineNum][0]; //終点を縁に
                     }
                 }
             }
@@ -242,6 +233,8 @@ public class BeamComponent : MonoBehaviour
         //応急処置　爆発以外はRenderingにこんなに入んないはず…
         var waitPerBeam = line_RedererPos_List.Count > 50 ? 0 : 0.1f;
 
+        var TestNum = 0;
+
         for (int i = 0; i < line_RedererPos_List.Count; i++)
         {
             //z軸の調整
@@ -259,6 +252,10 @@ public class BeamComponent : MonoBehaviour
             GameObject lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
 
             TestNum++;
+
+            Debug.Log(TestNum);
+
+            Debug.Log(i);
 
             lineRendererObj.name = TestNum.ToString();
 
@@ -423,6 +420,15 @@ public class BeamComponent : MonoBehaviour
                                     break;
                             }
                         }
+                    }
+
+                    Debug.Log(rayDirection.magnitude);
+
+                    if (rayDirection.magnitude < 0.5f)
+                    {
+                        //コルーチン抜けれるように描画しないけど審査済みにする
+                        shot_beam_coroutineNum--;
+                        yield break;
                     }
 
                     break;
@@ -657,16 +663,15 @@ public class BeamComponent : MonoBehaviour
             prePos = newPos;
         }
 
-        bombedLastLineNum = Const.cireclePersantage + line_RedererPos_List.Count;
-
         bombedLine.Add(new List<Vector3>());
-
-        Debug.Log(specialPos);
-
-        Debug.Log(rayDirectionPos);
 
         bombedLine[bombedLine.Count - 1].Add(specialPos);
         bombedLine[bombedLine.Count - 1].Add(rayDirectionPos-specialPos);
+
+        Debug.Log(bombedLine.Count);
+
+        //一個上のやつがはいっているとこ
+        bombedLastLineNum = Const.cireclePersantage + line_RedererPos_List.Count;
 
         isDeltaLine = true;
 
