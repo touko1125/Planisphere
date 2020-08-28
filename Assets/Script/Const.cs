@@ -8,6 +8,6 @@
     public static readonly string homeStageKey = "Home";
     public static readonly string csvConstellationKey = "SpreadSheet/ConstellationCollection";
     public static readonly string csvStoryKey = "SpreadSheet/StoryList";
-    public static readonly float shrinkPersantage = 8.0f;
+    public static readonly float shrinkPersantage = 2.0f;
     public static readonly string planetCollectionPosKey = "planetCollectionPos";
 }

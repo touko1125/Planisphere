@@ -75,6 +75,18 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
 
     public void PlayAudio(AudioClip audioClip,AudioSource audioSource,float volume,bool is_loop)
     {
+        var audioSourceNum = AudioSources[0] == audioSource ? 0 : 1;
+
+        switch (audioSourceNum)
+        {
+            case 0:
+                volumeBGM = volume;
+                break;
+            case 1:
+                volumeSE = volume;
+                break;
+        }
+
         audioSource.volume = volume;
         audioSource.loop = is_loop;
         audioSource.clip = audioClip;

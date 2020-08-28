@@ -30,11 +30,14 @@ public class StageProduction : MonoBehaviour
     private Image LoadUI;
 
     [SerializeField]
-    private Image[] LoadPlanetImage;
+    private List<Image> LoadPlanetImage;
 
     private string NextSceneStr;
 
     private float currentTime;
+
+    //制御
+    private bool gameEnd;
 
     private AsyncOperation async;
 
@@ -65,6 +68,8 @@ public class StageProduction : MonoBehaviour
         if (GameManager.Instance.isClearGame) return;
 
         if (GameManager.Instance.isPauseGame) return;
+
+        if (gameEnd) return;
 
         if(currentTime > Const.limitedTime)
         {
@@ -274,7 +279,9 @@ public class StageProduction : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        for(int i = 0; i < LoadPlanetImage.Length; i++)
+        LoadPlanetImage.Add(LoadPlanetImage[0].gameObject.transform.Find("Planet").gameObject.GetComponent<Image>());
+
+        for(int i = 0; i < LoadPlanetImage.Count; i++)
         {
             var planetImage = LoadPlanetImage[i];
 
@@ -285,11 +292,14 @@ public class StageProduction : MonoBehaviour
                             1f);
         }
 
-        async = SceneManager.LoadSceneAsync(NextSceneStr);
+        //Counttimeのチェックを通ってしまう
+        gameEnd = true;
 
         GameManager.Instance.isClearGame = false;
 
         GameManager.Instance.isPauseGame = false;
+
+        async = SceneManager.LoadSceneAsync(NextSceneStr);
 
         while (!async.isDone)
         {

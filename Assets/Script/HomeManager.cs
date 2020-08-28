@@ -33,6 +33,8 @@ public class HomeManager : MonoBehaviour
     {
         if (!InputManager.Instance.tapinfo.is_tap) return;
 
+        if (GameManager.Instance.isPauseGame) return;
+
         if (getTapInfo() == null) return;
 
         if (getTapInfo().tap_Obj == null) return;

@@ -160,6 +160,8 @@ public class StageSelectManager : MonoBehaviour
 
         GameManager.Instance.isClearGame = false;
 
+        GameManager.Instance.isPauseGame = false;
+
         while (!async.isDone)
         {
             LoadPlanetImage[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);

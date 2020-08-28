@@ -49,7 +49,7 @@ public class StartSceneManager : MonoBehaviour
     {
         isSceneTransition = true;
 
-        LoadPlanetImage[2].rectTransform.DOAnchorPos(frontBackDestination.rectTransform.anchoredPosition, 1.5f);
+        LoadPlanetImage[3].rectTransform.DOAnchorPos(frontBackDestination.rectTransform.anchoredPosition, 1.5f);
 
         //ちかちか解除
         titleTextTween.Kill();

@@ -42,8 +42,6 @@ public class CollectionManager : MonoBehaviour
     void Start()
     {
         StartCoroutine(FillCollectionImage());
-
-        AudioManager.Instance.StopAudio(AudioManager.Instance.AudioSources[0]);
     }
 
     // Update is called once per frame
@@ -91,6 +89,8 @@ public class CollectionManager : MonoBehaviour
     public void PressCollection(GameObject buttonObj)
     {
         collectionStr = buttonObj.name;
+
+        Debug.Log(collectionStr);
 
         if (isPop) return;
 

@@ -56,6 +56,10 @@ public class StoryManager : MonoBehaviour
 
         story = new Story(storyNumbers.ToArray(),storyType,storyUnlockNumber);
 
+        Debug.Log(gameObject.name);
+
+        Debug.Log(gameObject.transform.childCount);
+
         storyObj = gameObject.transform.Find("StoryObj").gameObject;
 
         backGround = gameObject.transform.Find("StoryObj").Find("Back").gameObject.GetComponent<Image>();
@@ -64,7 +68,7 @@ public class StoryManager : MonoBehaviour
 
         leftIcon = gameObject.transform.Find("StoryObj").Find("IconLeft").Find("Person").gameObject.GetComponent<Image>();
 
-        coverImage = gameObject.transform.Find("StoryObj").Find("Cover").GetComponent<Image>();
+        coverImage = gameObject.transform.Find("StoryObj").Find("cover").GetComponent<Image>();
 
         messageText = gameObject.transform.Find("StoryObj").Find("Story").Find("storyText").gameObject.GetComponent<TextMeshProUGUI>();
 
@@ -179,6 +183,6 @@ public class StoryManager : MonoBehaviour
 
     public bool isStoryUnlocked()
     {
-        return story.unlock_StoryStageNum <= GameManager.Instance.clearStageNum;
+        return story.unlock_StoryStageNum == GameManager.Instance.clearStageNum;
     }
 }
