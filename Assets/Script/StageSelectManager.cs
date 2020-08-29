@@ -28,10 +28,17 @@ public class StageSelectManager : MonoBehaviour
 
     private AsyncOperation async;
 
+    [SerializeField]
+    private GameObject cursoleObj;
+
+    private Tween cursoleTween;
+
     // Start is called before the first frame update
     void Start()
     {
         canvasObj = GameObject.Find("StageSelectCanvas");
+
+        SetCursole();
 
         StartCoroutine(FillStageImage());
     }
@@ -40,6 +47,25 @@ public class StageSelectManager : MonoBehaviour
     void Update()
     {
         ObserveInputPanelMove();
+    }
+
+    public void SetCursole()
+    {
+        if (GameManager.Instance.clearStageNum == 46)
+        {
+            cursoleObj.SetActive(false);
+            return;
+        }
+
+        var cursoleChildTransform = cursoleObj.GetComponent<RectTransform>().localPosition;
+
+        cursoleObj.transform.parent = stageSprites[GameManager.Instance.clearStageNum + 1].transform;
+
+        cursoleObj.GetComponent<RectTransform>().localEulerAngles = new Vector3(-180,0,0);
+
+        cursoleObj.GetComponent<RectTransform>().localPosition = cursoleChildTransform;
+
+        cursoleTween = cursoleObj.GetComponent<Image>().DOFade(0.0f, 0.3f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo).Play();
     }
 
     public void ObserveInputPanelMove()
