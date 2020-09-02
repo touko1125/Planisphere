@@ -30,10 +30,12 @@ public class StageProduction : MonoBehaviour
     private Image LoadUI;
 
     [SerializeField]
-    private List<Image> LoadPlanetImage;
+    private List<Image> LoadPlanetImages;
 
-    private string NextSceneStr;
+    //次ステージ用
+    private string nextSceneStr;
 
+    //経過時間
     private float currentTime;
 
     //制御
@@ -52,6 +54,7 @@ public class StageProduction : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //経過時間観測
         CountTime();
     }
 
@@ -71,6 +74,7 @@ public class StageProduction : MonoBehaviour
 
         if (gameEnd) return;
 
+        //制限時間をすぎたら
         if(currentTime > Const.limitedTime)
         {
             StartCoroutine(GameOverProduction());
@@ -87,11 +91,13 @@ public class StageProduction : MonoBehaviour
     {
         var planetManager = new PlanetManager();
 
+        //星たちを真顔に
         for (int i = 0; i < planetManager.planetList.Count; i++)
         {
             planetManager.planetList[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.nomal);
         }
 
+        //真顔みるタイム
         yield return new WaitForSeconds(0.3f);
 
         RaycastTarget(GameoverImages, true);
@@ -133,6 +139,7 @@ public class StageProduction : MonoBehaviour
             planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.smile);
         }
 
+        //今クリアしたステージが未クリアだったらクリア情報を更新
         if ((int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name) > GameManager.Instance.clearStageNum)
         {
             GameManager.Instance.clearStageNum = (int)(Enum.Stage)System.Enum.Parse(typeof(Enum.Stage), SceneManager.GetActiveScene().name);
@@ -177,34 +184,41 @@ public class StageProduction : MonoBehaviour
 
     public void PressTitle(Image buttonObj)
     {
-        NextSceneStr = "Home";
+        nextSceneStr = "Home";
 
+        //効果音再生
         AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[3], AudioManager.Instance.AudioSources[1], AudioManager.Instance.volumeSE, false);
 
+        //シーン遷移
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>(),
             buttonObj.gameObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>()));
     }
 
     public void PressNext(Image buttonObj)
     {
-        var currentSceneStr = (Enum.Stage)System.Enum.Parse(typeof(Enum.Stage),SceneManager.GetActiveScene().name);
+        //現在のシーン(Enum.Stage型)
+        var currentSceneEnum = (Enum.Stage)System.Enum.Parse(typeof(Enum.Stage),SceneManager.GetActiveScene().name);
 
-        NextSceneStr = ((Enum.Stage)System.Enum.ToObject(typeof(Enum.Stage),(int)currentSceneStr+1)).ToString();
+        //次のシーン(string型)
+        nextSceneStr = ((Enum.Stage)System.Enum.ToObject(typeof(Enum.Stage),(int)currentSceneEnum+1)).ToString();
 
+        //効果音再生
         AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[3], AudioManager.Instance.AudioSources[1], AudioManager.Instance.volumeSE, false);
 
-        StartCoroutine(SceneTransition(buttonObj.gameObject.transform.Find("Fill").gameObject.GetComponent<Image>(),
-            buttonObj.gameObject.transform.Find("NEXT").gameObject.GetComponent<TextMeshProUGUI>()));
+        //シーン遷移
+        StartCoroutine(SceneTransition(buttonObj.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>(),
+            buttonObj.gameObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>()));
     }
 
     public void PressRetry(Image buttonObj)
     {
-        var currentSceneStr = SceneManager.GetActiveScene().name;
+        //現在のシーン
+        nextSceneStr = SceneManager.GetActiveScene().name;
 
-        NextSceneStr = currentSceneStr;
-
+        //効果音再生
         AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[3], AudioManager.Instance.AudioSources[1], AudioManager.Instance.volumeSE, false);
 
+        //シーン遷移
         StartCoroutine(SceneTransition(buttonObj.gameObject.transform.GetChild(0).gameObject.GetComponent<Image>(),
            buttonObj.gameObject.transform.GetChild(1).gameObject.GetComponent<TextMeshProUGUI>()));
     }
@@ -279,11 +293,11 @@ public class StageProduction : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-        LoadPlanetImage.Add(LoadPlanetImage[0].gameObject.transform.Find("Planet").gameObject.GetComponent<Image>());
+        LoadPlanetImages.Add(LoadPlanetImages[0].gameObject.transform.Find("Planet").gameObject.GetComponent<Image>());
 
-        for(int i = 0; i < LoadPlanetImage.Count; i++)
+        for(int i = 0; i < LoadPlanetImages.Count; i++)
         {
-            var planetImage = LoadPlanetImage[i];
+            var planetImage = LoadPlanetImages[i];
 
             //ロード用の惑星も表示
             DOTween.ToAlpha(() => planetImage.color,
@@ -299,11 +313,11 @@ public class StageProduction : MonoBehaviour
 
         GameManager.Instance.isPauseGame = false;
 
-        async = SceneManager.LoadSceneAsync(NextSceneStr);
+        async = SceneManager.LoadSceneAsync(nextSceneStr);
 
         while (!async.isDone)
         {
-            LoadPlanetImage[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);
+            LoadPlanetImages[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);
             yield return null;
         }
     }

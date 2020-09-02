@@ -3865,7 +3865,7 @@ MonoBehaviour:
   ClockParent: {fileID: 1647669905}
   Panel: {fileID: 1007586794}
   LoadUI: {fileID: 1543831829}
-  LoadPlanetImage:
+  LoadPlanetImages:
   - {fileID: 963039182}
   - {fileID: 588133923}
 --- !u!4 &662212160
