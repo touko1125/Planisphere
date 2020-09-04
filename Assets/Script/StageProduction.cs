@@ -8,29 +8,51 @@ using UnityEngine.SceneManagement;
 
 public class StageProduction : MonoBehaviour
 {
+    //中身取得用
     [SerializeField]
-    private Image[] ClearImages;
+    private GameObject canvas;
 
+    //ゲームパネル
     [SerializeField]
-    private TextMeshProUGUI[] ClearTexts;
+    private GameObject Plate;
 
-    [SerializeField]
-    private Image[] GameoverImages;
+    private List<Image> clearCanvasImages=new List<Image>();
 
-    [SerializeField]
-    private TextMeshProUGUI[] GameoverTexts;
+    private List<TextMeshProUGUI> clearCanvasTexts=new List<TextMeshProUGUI>();
 
-    [SerializeField]
-    private GameObject ClockParent;
+    private List<Image> gameoverCanvasImages=new List<Image>();
 
-    [SerializeField]
-    private GameObject Panel;
+    private List<TextMeshProUGUI> gameoverCanvasTexts=new List<TextMeshProUGUI>();
 
-    [SerializeField]
-    private Image LoadUI;
+    private Image transitionCanvas;
 
-    [SerializeField]
-    private List<Image> LoadPlanetImages;
+    private List<Image> transitionCanvasImages=new List<Image>();
+
+    private GameObject clockParent;
+
+    //[SerializeField]
+    //private Image[] ClearImages;
+
+    //[SerializeField]
+    //private TextMeshProUGUI[] ClearTexts;
+
+    //[SerializeField]
+    //private Image[] GameoverImages;
+
+    //[SerializeField]
+    //private TextMeshProUGUI[] GameoverTexts;
+
+    //[SerializeField]
+    //private GameObject ClockParent;
+
+    //[SerializeField]
+    //private GameObject Panel;
+
+    //[SerializeField]
+    //private Image LoadUI;
+
+    //[SerializeField]
+    //private List<Image> LoadPlanetImages;
 
     //次ステージ用
     private string nextSceneStr;
@@ -46,9 +68,11 @@ public class StageProduction : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RaycastTarget(GameoverImages, false);
+        SetObjects();
 
-        RaycastTarget(ClearImages, false);
+        RaycastTarget(gameoverCanvasImages, false);
+
+        RaycastTarget(clearCanvasImages, false);
     }
 
     // Update is called once per frame
@@ -58,7 +82,38 @@ public class StageProduction : MonoBehaviour
         CountTime();
     }
 
-    public void RaycastTarget(Image[] objects,bool raycastTarget)
+    public void SetObjects()
+    {
+        //クリア画面の画像設定
+        clearCanvasImages.Add(canvas.transform.Find("ClearUI").gameObject.GetComponent<Image>());
+        clearCanvasImages.Add(clearCanvasImages[0].transform.Find("NextButtom").gameObject.GetComponent<Image>());
+        clearCanvasImages.Add(clearCanvasImages[0].transform.Find("RetryButtom").gameObject.GetComponent<Image>());
+        clearCanvasImages.Add(clearCanvasImages[0].transform.Find("TitleButtom").gameObject.GetComponent<Image>());
+
+        clearCanvasTexts.Add(clearCanvasImages[0].transform.Find("STAGECLEAR").gameObject.GetComponent<TextMeshProUGUI>());
+        clearCanvasTexts.Add(clearCanvasImages[0].transform.Find("NextButtom").transform.Find("NEXT").gameObject.GetComponent<TextMeshProUGUI>());
+        clearCanvasTexts.Add(clearCanvasImages[0].transform.Find("RetryButtom").transform.Find("RETRY").gameObject.GetComponent<TextMeshProUGUI>());
+        clearCanvasTexts.Add(clearCanvasImages[0].transform.Find("TitleButtom").transform.Find("TITLE").gameObject.GetComponent<TextMeshProUGUI>());
+
+        //ゲームオーバー画面の画像設定
+        gameoverCanvasImages.Add(canvas.transform.Find("GameOverUI").gameObject.GetComponent<Image>());
+        gameoverCanvasImages.Add(gameoverCanvasImages[0].transform.Find("TitleButtom").gameObject.GetComponent<Image>());
+        gameoverCanvasImages.Add(gameoverCanvasImages[0].transform.Find("RetryButtom").gameObject.GetComponent<Image>());
+
+        gameoverCanvasTexts.Add(gameoverCanvasImages[0].transform.Find("TIMEUP").gameObject.GetComponent<TextMeshProUGUI>());
+        gameoverCanvasTexts.Add(gameoverCanvasImages[0].transform.Find("RetryButtom").transform.Find("RETRY").gameObject.GetComponent<TextMeshProUGUI>());
+        gameoverCanvasTexts.Add(gameoverCanvasImages[0].transform.Find("TitleButtom").transform.Find("TITLE").gameObject.GetComponent<TextMeshProUGUI>());
+
+        //遷移画面の画像設定
+        transitionCanvas = canvas.transform.Find("TransitionUI").gameObject.GetComponent<Image>();
+        foreach(Transform childTrans in transitionCanvas.transform)
+        {
+            transitionCanvasImages.Add(childTrans.gameObject.GetComponent<Image>());
+        }
+        clockParent = canvas.transform.Find("DownUI").transform.Find("ClockParent").gameObject;
+    }
+
+    public void RaycastTarget(List<Image> objects,bool raycastTarget)
     {
         foreach(Image image in objects)
         {
@@ -84,7 +139,7 @@ public class StageProduction : MonoBehaviour
 
         currentTime += Time.deltaTime;
 
-        ClockParent.transform.localRotation = Quaternion.Euler(0, 0, 70 - (140 * (currentTime / Const.limitedTime)));
+        clockParent.transform.localRotation = Quaternion.Euler(0, 0, 70 - (140 * (currentTime / Const.limitedTime)));
     }
 
     public IEnumerator GameOverProduction()
@@ -100,16 +155,16 @@ public class StageProduction : MonoBehaviour
         //真顔みるタイム
         yield return new WaitForSeconds(0.3f);
 
-        RaycastTarget(GameoverImages, true);
+        RaycastTarget(gameoverCanvasImages, true);
 
-        RaycastTarget(ClearImages, false);
+        RaycastTarget(clearCanvasImages, false);
 
         //ゲームパネルの非表示
-        Panel.SetActive(false);
+        Plate.SetActive(false);
 
-        for (int i = 0; i < GameoverImages.Length; i++)
+        for (int i = 0; i < gameoverCanvasImages.Count; i++)
         {
-            var img = GameoverImages[i];
+            var img = gameoverCanvasImages[i];
 
             img.gameObject.SetActive(true);
 
@@ -120,9 +175,9 @@ public class StageProduction : MonoBehaviour
                             0.5f);
         }
 
-        for (int i = 0; i < GameoverTexts.Length; i++)
+        for (int i = 0; i < gameoverCanvasTexts.Count; i++)
         {
-            var txt = GameoverTexts[i];
+            var txt = gameoverCanvasTexts[i];
 
             //テキストの表示
             DOTween.ToAlpha(() => txt.color,
@@ -134,6 +189,7 @@ public class StageProduction : MonoBehaviour
 
     public IEnumerator ClearProduction(List<GameObject> planetObjects)
     {
+        //星たちを笑顔に
         for(int i = 0; i < planetObjects.Count; i++)
         {
             planetObjects[i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.smile);
@@ -147,18 +203,19 @@ public class StageProduction : MonoBehaviour
             GameManager.Instance.SaveClearStageNum();
         }
 
+        //笑顔見るタイム
         yield return new WaitForSeconds(0.3f);
 
-        RaycastTarget(GameoverImages, false);
+        RaycastTarget(gameoverCanvasImages, false);
 
-        RaycastTarget(ClearImages, true);
+        RaycastTarget(clearCanvasImages, true);
 
         //ゲームパネルの非表示
-        Panel.SetActive(false);
+        Plate.SetActive(false);
 
-        for (int i = 0; i < ClearImages.Length; i++)
+        for (int i = 0; i < clearCanvasImages.Count; i++)
         {
-            var img = ClearImages[i];
+            var img = clearCanvasImages[i];
 
             img.gameObject.SetActive(true);
 
@@ -169,9 +226,9 @@ public class StageProduction : MonoBehaviour
                             0.5f);
         }
 
-        for (int i = 0; i < ClearTexts.Length; i++)
+        for (int i = 0; i < clearCanvasTexts.Count; i++)
         {
-            var txt = ClearTexts[i];
+            var txt = clearCanvasTexts[i];
 
             //テキストの表示
             DOTween.ToAlpha(() => txt.color,
@@ -225,6 +282,9 @@ public class StageProduction : MonoBehaviour
 
     public IEnumerator SceneTransition(Image buttonObj, TextMeshProUGUI buttonText)
     {
+        //Counttimeのチェックを通ってしまう
+        gameEnd = true;
+
         buttonText.color = new Color(1, 1, 1);
 
         DOTween.To(
@@ -235,9 +295,9 @@ public class StageProduction : MonoBehaviour
 
         yield return new WaitForSeconds(1.5f);
 
-        for (int i = 0; i < ClearImages.Length; i++)
+        for (int i = 0; i < clearCanvasImages.Count; i++)
         {
-            var img = ClearImages[i];
+            var img = clearCanvasImages[i];
 
             //画像の非表示
             DOTween.ToAlpha(() => img.color,
@@ -246,9 +306,9 @@ public class StageProduction : MonoBehaviour
                             0.2f);
         }
 
-        for (int i = 0; i < ClearTexts.Length; i++)
+        for (int i = 0; i < clearCanvasTexts.Count; i++)
         {
-            var txt = ClearTexts[i];
+            var txt = clearCanvasTexts[i];
 
             //テキストの非表示
             DOTween.ToAlpha(() => txt.color,
@@ -257,9 +317,9 @@ public class StageProduction : MonoBehaviour
                             0.2f);
         }
 
-        for (int i = 0; i < GameoverImages.Length; i++)
+        for (int i = 0; i < gameoverCanvasImages.Count; i++)
         {
-            var img = GameoverImages[i];
+            var img = gameoverCanvasImages[i];
 
             //画像の表示
             DOTween.ToAlpha(() => img.color,
@@ -268,9 +328,9 @@ public class StageProduction : MonoBehaviour
                             0.2f);
         }
 
-        for (int i = 0; i < GameoverTexts.Length; i++)
+        for (int i = 0; i < gameoverCanvasTexts.Count; i++)
         {
-            var txt = GameoverTexts[i];
+            var txt = gameoverCanvasTexts[i];
 
             //テキストの表示
             DOTween.ToAlpha(() => txt.color,
@@ -279,25 +339,23 @@ public class StageProduction : MonoBehaviour
                             0.2f);
         }
 
-        //画像の非表示
+        //ボタン画像の非表示
         DOTween.ToAlpha(() => buttonObj.color,
                         color => buttonObj.color = color,
                         0,
                         0.2f);
 
-        //画像の表示
-        DOTween.ToAlpha(() => LoadUI.color,
-                        color => LoadUI.color = color,
+        //遷移画像の表示
+        DOTween.ToAlpha(() => transitionCanvas.color,
+                        color => transitionCanvas.color = color,
                         1,
                         1f);
 
         yield return new WaitForSeconds(0.5f);
 
-        LoadPlanetImages.Add(LoadPlanetImages[0].gameObject.transform.Find("Planet").gameObject.GetComponent<Image>());
-
-        for(int i = 0; i < LoadPlanetImages.Count; i++)
+        for(int i = 0; i < transitionCanvasImages.Count; i++)
         {
-            var planetImage = LoadPlanetImages[i];
+            var planetImage = transitionCanvasImages[i];
 
             //ロード用の惑星も表示
             DOTween.ToAlpha(() => planetImage.color,
@@ -305,9 +363,6 @@ public class StageProduction : MonoBehaviour
                             1,
                             1f);
         }
-
-        //Counttimeのチェックを通ってしまう
-        gameEnd = true;
 
         GameManager.Instance.isClearGame = false;
 
@@ -317,7 +372,7 @@ public class StageProduction : MonoBehaviour
 
         while (!async.isDone)
         {
-            LoadPlanetImages[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);
+            transitionCanvasImages[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);
             yield return null;
         }
     }

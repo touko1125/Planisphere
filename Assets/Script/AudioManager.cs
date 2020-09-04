@@ -30,28 +30,13 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         AudioSources[0].volume = volumeBGM;
         AudioSources[1].volume = volumeSE;
 
-        PlayBGM();
+        PlayAudio(AudioClips[4], AudioSources[0], 0.4f, true);
     }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    public void PlayBGM()
-    {
-        //switch (SceneManager.GetActiveScene().name)
-        //{
-        //    case "Collection":
-
-        //        return;
-        //    case "Home":
-
-        //        return;
-        //}
-
-        PlayAudio(AudioClips[4], AudioSources[0], 0.4f, true);
     }
 
     public void ChangeVolume(float volume,int audioSourceNum)

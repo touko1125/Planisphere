@@ -32,7 +32,7 @@ public class InputManager :SingletonMonoBehaviour<InputManager>
         //タップしている場所の座標を変換
         var tapObj = hit ? hit.collider.gameObject : null;
 
-        //タッチされているかのチェック
+        //タッチされているかのチェック(Application上)
         if (Input.touchCount > 0)
         {
             //押した瞬間
@@ -56,6 +56,7 @@ public class InputManager :SingletonMonoBehaviour<InputManager>
             isPlayOnApplication = true;
         }
 
+        //タッチされているかのチェック(Editor上)
         if (!isPlayOnApplication)
         {
             //押した瞬間
@@ -78,6 +79,7 @@ public class InputManager :SingletonMonoBehaviour<InputManager>
         }
     }
 
+    //スクリーン座標→ワールド座標
     public Vector2 ChangeScreenPosIntoWorldPos(Vector2 screenPos)
     {
         return Camera.main.ScreenToWorldPoint(screenPos);

@@ -111,19 +111,10 @@ public class StoryManager : MonoBehaviour
 
         if (isPlayingStory) yield break;
 
-        Sprite firstLeftIconSprite=null;
-        Sprite firstRightIconSprite=null;
+        Sprite firstLeftIconSprite = null;
+        Sprite firstRightIconSprite = null;
 
-        //一番初めの左右の画像を探す
-        for (int i = 0; i < story.story_Chart.Count; i++)
-        {
-            if (story.story_Chart[i].message_PersonPos == Enum.LR.left)
-            {
-                firstLeftIconSprite = story.story_Chart[i].message_PersonSprite;
-                break;
-            } 
-        }
-
+        //一番初めの左右それぞれの画像を探す
         for (int i = 0; i < story.story_Chart.Count; i++)
         {
             if (story.story_Chart[i].message_PersonPos == Enum.LR.right)
@@ -132,10 +123,14 @@ public class StoryManager : MonoBehaviour
                 break;
             }
         }
-
-        Debug.Log(firstLeftIconSprite);
-
-        Debug.Log(firstRightIconSprite);
+        for (int i = 0; i < story.story_Chart.Count; i++)
+        {
+            if (story.story_Chart[i].message_PersonPos == Enum.LR.left)
+            {
+                firstLeftIconSprite = story.story_Chart[i].message_PersonSprite;
+                break;
+            }
+        }
 
         for (int i = 0; i < story.story_Chart.Count;i++)
         {

@@ -15,6 +15,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+        PlayerPrefs.DeleteAll();
+
         clearStageNum = PlayerPrefs.GetInt(Const.clearStageNumKey, -1);
 
         planetPosList = PlayerPrefsUtility.LoadMultidimensionalList<Vector2>(Const.planetCollectionPosKey);

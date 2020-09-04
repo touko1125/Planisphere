@@ -2916,7 +2916,7 @@ GameObject:
   - component: {fileID: 475040566}
   - component: {fileID: 475040565}
   m_Layer: 5
-  m_Name: STAGECLEAR
+  m_Name: TIMEUP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2960,7 +2960,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: GAMEOVER
+  m_text: TIMEUP
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2996,7 +2996,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_textAlignment: 514
-  m_characterSpacing: 45.21
+  m_characterSpacing: 100
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3029,7 +3029,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 475040565}
-    characterCount: 8
+    characterCount: 6
     spriteCount: 0
     spaceCount: 0
     wordCount: 1
@@ -11744,30 +11744,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f33a0087cb86f74b833bfb9d949e510, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ClearImages:
-  - {fileID: 610225322}
-  - {fileID: 1878032713}
-  - {fileID: 1398494361}
-  - {fileID: 192960700}
-  ClearTexts:
-  - {fileID: 1613530760}
-  - {fileID: 1086300160}
-  - {fileID: 249370634}
-  - {fileID: 394503186}
-  GameoverImages:
-  - {fileID: 1205164904}
-  - {fileID: 1212985564}
-  - {fileID: 65719870}
-  GameoverTexts:
-  - {fileID: 475040565}
-  - {fileID: 307841560}
-  - {fileID: 748051557}
-  ClockParent: {fileID: 1973006345}
-  Panel: {fileID: 1604254439}
-  LoadUI: {fileID: 1641383158}
-  LoadPlanetImages:
-  - {fileID: 186837796}
-  - {fileID: 1299577951}
+  canvas: {fileID: 2006988295}
+  Plate: {fileID: 1604254439}
 --- !u!4 &1765415732
 Transform:
   m_ObjectHideFlags: 0

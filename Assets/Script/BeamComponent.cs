@@ -8,10 +8,8 @@ using UniRx;
 
 public class BeamComponent : MonoBehaviour
 {
-    public GameObject lineRendererObjPrefab;
-
     [SerializeField]
-    private PlanetManager planetManager;
+    private GameObject lineRendererObjPrefab;
 
     private GameObject Edge;
 
