@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Text;
 using System;
 
 /// <summary>
@@ -36,24 +37,71 @@ public static class PlayerPrefsUtility
     /// </summary>
     public static void SaveMultiDimensionalList<T>(string key,List<List<T>> value)
     {
-        var inListListSerialized = new List<string>();
+        var vector2StringListSerializeList = new List<string>();
 
         //各星座ごとのリストのなかのVector2型の要素をstring型に変換
         //それをリストに入れたやつをSerialize
         for(int i = 0; i < value.Count; i++)
         {
-            var vectorStringList = new List<string>();
+            var vector2StringList = new List<string>();
 
-            for(int n = 0; n < value[i].Count; n++)
+            for (int n = 0; n < value[i].Count; n++)
             {
-                vectorStringList.Add(SerializeVector2(value[i][n]));
+                vector2StringList.Add(SerializeVector2(value[i][n]));
             }
 
-            inListListSerialized.Add(Serialize(vectorStringList));
+            Another("SerializeVector2StringListCSV.csv", vector2StringList);
+
+            Debug.Log(i);
+
+            vector2StringListSerializeList.Add(Serialize(vector2StringList));
+
+            Debug.Log(vector2StringListSerializeList.Count);
+
+            WritePlanetPosDateCSV("vector2StringListSerializeListCSV.csv", vector2StringListSerializeList);
         }
 
-        string serializedList = Serialize(inListListSerialized);
-        PlayerPrefs.SetString(key, serializedList);
+        var serializedListString = Serialize(vector2StringListSerializeList);
+
+        var serializedList = new List<string>();
+
+        serializedList.Add(serializedListString);
+
+        WritePlanetPosDateCSV("serializedListStringCSV.csv", serializedList);
+
+        PlayerPrefs.SetString(key, serializedListString);
+    }
+
+    public static void Another(string folderPass, List<string> strList)
+    {
+        StreamWriter streamWriter = new StreamWriter(@folderPass,false);
+
+        for (int i = 0; i < strList.Count; i++)
+        {
+            string[] str2 = strList[i].Split(',');
+            var str3=i.ToString() + "," + str2[0] + ":" + str2[1] + "\n";
+            Debug.Log(str3);
+            streamWriter.Write(str3);
+        }
+
+        streamWriter.Flush();
+    }
+
+    public static void WritePlanetPosDateCSV(string folderPass,List<string> strList)
+    {
+        StreamWriter streamWriter = new StreamWriter(@folderPass,false,Encoding.GetEncoding("Shift_JIS"));
+
+        for(int i=0;i<strList.Count;i++)
+        {
+            string[] str = {i.ToString(),strList[i]};
+            var str2 = string.Join(",", str);
+
+            Debug.Log(str2);
+
+            streamWriter.WriteLine(str2);
+        }
+
+        streamWriter.Close();
     }
 
     /// <summary>
@@ -77,7 +125,7 @@ public static class PlayerPrefsUtility
         //keyがある時だけ読み込む
         if (PlayerPrefs.HasKey(key))
         {
-            string serizlizedList = PlayerPrefs.GetString(key);
+            var serizlizedList = PlayerPrefs.GetString(key);
             return Deserialize<List<T>>(serizlizedList);
         }
 
@@ -86,38 +134,39 @@ public static class PlayerPrefsUtility
 
     public static List<List<T>> LoadMultidimensionalList<T>(string key)
     {
-        var multidimensionalList = new List<List<T>>();
+        var multiDimensionalList = new List<List<T>>();
 
         if (PlayerPrefs.HasKey(key))
         {
             //星座ごとの惑星の位置のリストがstring型にされたものをDeserializeする
-            string serializedList = PlayerPrefs.GetString(key);
-            var inListListSerialized = Deserialize<List<string>>(serializedList);
+            var serializedListString = PlayerPrefs.GetString(key);
+            var vector2StringListSerializeList = Deserialize<List<string>>(serializedListString);
 
             //string型からそれぞれの星座の位置のList<string>をDeserialize
-            for (int i = 0; i < inListListSerialized.Count; i++)
+            for (int i = 0; i < vector2StringListSerializeList.Count; i++)
             {
-                var vectorStringList = Deserialize<List<string>>(inListListSerialized[i]);
+                var vector2StringList = Deserialize<List<string>>(vector2StringListSerializeList[i]);
 
-                multidimensionalList.Add(new List<T>());
+                multiDimensionalList.Add(new List<T>());
 
-                for (int n = 0; n < vectorStringList.Count; n++)
+                for (int n = 0; n < vector2StringList.Count; n++)
                 {
-                    multidimensionalList[i].Add(DeserializeVector2<T>(vectorStringList[n]));
+                    multiDimensionalList[i].Add(DeserializeVector2<T>(vector2StringList[n]));
                 }
             }
 
-            return multidimensionalList;
+            return multiDimensionalList;
         }
 
-        var defaultMultidimensionalList = new List<List<T>>();
+        //初期値
+        var defaultMultiDimensionalList = new List<List<T>>();
 
         for(int i = 0; i <= (int)Enum.Stage.Argo; i++)
         {
-            defaultMultidimensionalList.Add(new List<T>());
+            defaultMultiDimensionalList.Add(new List<T>());
         }
 
-        return defaultMultidimensionalList;
+        return defaultMultiDimensionalList;
     }
 
     /// <summary>
