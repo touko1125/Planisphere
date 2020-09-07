@@ -65,7 +65,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
         if (tapObj.tag == "CoverTab") return;
 
         //線のリセット
-        beamComponent.ThinandDestroyLine(int.Parse(tapObj.name));
+        beamComponent.ThinAndDestroyLine(int.Parse(tapObj.name));
 
         //星の状態のリセット
         beamComponent.RestPlanetState(int.Parse(tapObj.name));

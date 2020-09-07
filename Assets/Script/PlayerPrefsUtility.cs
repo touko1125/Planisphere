@@ -50,58 +50,12 @@ public static class PlayerPrefsUtility
                 vector2StringList.Add(SerializeVector2(value[i][n]));
             }
 
-            Another("SerializeVector2StringListCSV.csv", vector2StringList);
-
-            Debug.Log(i);
-
             vector2StringListSerializeList.Add(Serialize(vector2StringList));
-
-            Debug.Log(vector2StringListSerializeList.Count);
-
-            WritePlanetPosDateCSV("vector2StringListSerializeListCSV.csv", vector2StringListSerializeList);
         }
 
         var serializedListString = Serialize(vector2StringListSerializeList);
 
-        var serializedList = new List<string>();
-
-        serializedList.Add(serializedListString);
-
-        WritePlanetPosDateCSV("serializedListStringCSV.csv", serializedList);
-
         PlayerPrefs.SetString(key, serializedListString);
-    }
-
-    public static void Another(string folderPass, List<string> strList)
-    {
-        StreamWriter streamWriter = new StreamWriter(@folderPass,false);
-
-        for (int i = 0; i < strList.Count; i++)
-        {
-            string[] str2 = strList[i].Split(',');
-            var str3=i.ToString() + "," + str2[0] + ":" + str2[1] + "\n";
-            Debug.Log(str3);
-            streamWriter.Write(str3);
-        }
-
-        streamWriter.Flush();
-    }
-
-    public static void WritePlanetPosDateCSV(string folderPass,List<string> strList)
-    {
-        StreamWriter streamWriter = new StreamWriter(@folderPass,false,Encoding.GetEncoding("Shift_JIS"));
-
-        for(int i=0;i<strList.Count;i++)
-        {
-            string[] str = {i.ToString(),strList[i]};
-            var str2 = string.Join(",", str);
-
-            Debug.Log(str2);
-
-            streamWriter.WriteLine(str2);
-        }
-
-        streamWriter.Close();
     }
 
     /// <summary>
