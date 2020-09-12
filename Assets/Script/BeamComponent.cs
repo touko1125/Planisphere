@@ -17,8 +17,6 @@ public class BeamComponent : MonoBehaviour
 
     public Material beforeLineMaterial;
 
-    private Vector3 line_Difference;
-
     public List<GameObject> currentBeamHitObjects = new List<GameObject>();
 
     private List<List<GameObject>> currentBeamPlanetObjects = new List<List<GameObject>>();
@@ -214,48 +212,8 @@ public class BeamComponent : MonoBehaviour
 
         beforeLineRendererObjects[currentTabNum].Clear();
 
-        //応急処置　爆発以外はRenderingにこんなに入んないはず…
-        var waitPerBeam = line_RedererPos_List.Count > 50 ? 0 : 0.1f;
-
-        for (int i = 0; i < line_RedererPos_List.Count; i++)
-        {
-            //z軸の調整
-            line_RedererPos_List[i][1] = new Vector3(line_RedererPos_List[i][1].x, line_RedererPos_List[i][1].y,0);
-
-            line_Difference = line_RedererPos_List[i][1];
-
-            while (line_Difference.magnitude > 0.1f)
-            {
-                line_Difference = line_Difference / 2f;
-            }
-
-            var differenceNum = (int)(line_RedererPos_List[i][1].magnitude / line_Difference.magnitude);
-
-            var lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
-
-            beforeLineRendererObjects[currentTabNum].Add(lineRendererObj);
-
-            var lineRenderer = lineRendererObj.GetComponent<LineRenderer>();
-
-            lineRenderer.alignment = LineAlignment.TransformZ;
-
-            lineRenderer.SetWidth(4.0f, 4.0f);
-
-            lineRenderer.textureMode = LineTextureMode.Tile;
-
-            lineRenderer.material = currentLineMaterial;
-
-            for (int n = 0; n < differenceNum; n++)
-            {
-                yield return new WaitForSeconds(waitPerBeam/10);
-                lineRenderer.positionCount = n + 1;
-
-                lineRenderer.SetPosition(n, line_RedererPos_List[i][0] + line_Difference);
-                line_RedererPos_List[i][0] = line_RedererPos_List[i][0] + line_Difference;
-            }
-
-            yield return new WaitForSeconds(waitPerBeam);
-        }
+        //描画
+        yield return StartCoroutine(DrawLine());
 
         //次のビームに備えて状態のリセット
         for(int i = 0; i < currentBeamHitObjects.Count; i++)
@@ -281,6 +239,52 @@ public class BeamComponent : MonoBehaviour
         is_Reflected = false;
 
         isDeltaLine = false;
+    }
+
+    public IEnumerator DrawLine()
+    {
+        //応急処置　爆発以外はRenderingにこんなに入んないはず…
+        var waitPerBeam = line_RedererPos_List.Count > 50 ? 0 : 0.1f;
+
+        for (int i = 0; i < line_RedererPos_List.Count; i++)
+        {
+            //z軸の調整
+            line_RedererPos_List[i][1] = new Vector3(line_RedererPos_List[i][1].x, line_RedererPos_List[i][1].y, 0);
+
+            var line_Difference = line_RedererPos_List[i][1];
+
+            while (line_Difference.magnitude > 0.1f)
+            {
+                line_Difference = line_Difference / 2f;
+            }
+
+            var differenceNum = (int)(line_RedererPos_List[i][1].magnitude / line_Difference.magnitude);
+
+            var lineRendererObj = Instantiate(lineRendererObjPrefab, Vector3.zero, Quaternion.identity);
+
+            beforeLineRendererObjects[currentTabNum].Add(lineRendererObj);
+
+            var lineRenderer = lineRendererObj.GetComponent<LineRenderer>();
+
+            lineRenderer.alignment = LineAlignment.TransformZ;
+
+            lineRenderer.SetWidth(4.0f, 4.0f);
+
+            lineRenderer.textureMode = LineTextureMode.Tile;
+
+            lineRenderer.material = currentLineMaterial;
+
+            for (int n = 0; n < differenceNum; n++)
+            {
+                yield return new WaitForSeconds(waitPerBeam / 10);
+                lineRenderer.positionCount = n + 1;
+
+                lineRenderer.SetPosition(n, line_RedererPos_List[i][0] + line_Difference);
+                line_RedererPos_List[i][0] = line_RedererPos_List[i][0] + line_Difference;
+            }
+
+            yield return new WaitForSeconds(waitPerBeam);
+        }
     }
 
     public IEnumerator JudgeHitObjType(List<GameObject> hitObjects,List<Vector3> hitPos,Vector3 raystartPos,Vector3 rayDirection)
@@ -584,7 +588,7 @@ public class BeamComponent : MonoBehaviour
         yield return new WaitForSeconds(0);
     }
 
-    public List<List<Vector3>> getBombedLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirectionPos)
+    public List<List<Vector3>> getBombedLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirection)
     {
         //一番新しいところに描画位置(ビーム始点からかがみまで)を収納
         line_RedererPos_List.Add(new List<Vector3>());
@@ -628,7 +632,7 @@ public class BeamComponent : MonoBehaviour
         bombedLine.Add(new List<Vector3>());
 
         bombedLine[bombedLine.Count - 1].Add(specialPos);
-        bombedLine[bombedLine.Count - 1].Add(rayDirectionPos-specialPos);
+        bombedLine[bombedLine.Count - 1].Add(rayDirection-specialPos);
 
         //一個上のやつがはいっているとこ
         bombedLastLineNum = Const.cireclePersantage + line_RedererPos_List.Count;
@@ -638,7 +642,7 @@ public class BeamComponent : MonoBehaviour
         return bombedLine;
     }
 
-    public List<List<Vector3>> getBendLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirectionPos)
+    public List<List<Vector3>> getBendLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirection)
     {
         //一番新しいところに描画位置(ビーム始点からかがみまで)を収納
         line_RedererPos_List.Add(new List<Vector3>());
@@ -690,7 +694,7 @@ public class BeamComponent : MonoBehaviour
 
         if (isOdd)
         {
-            var centerVector =rayDirectionPos - rayStartPos;
+            var centerVector =rayDirection - rayStartPos;
 
             var topVectorList = new List<Vector3>();
 
@@ -705,7 +709,7 @@ public class BeamComponent : MonoBehaviour
         return bendTestLine;
     }
 
-    public Vector3[] getBendBlackHoleLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirectionPos)
+    public Vector3[] getBendBlackHoleLine(GameObject hitObj, Vector3 hitPos, Vector3 rayStartPos, Vector3 rayDirection)
     {
         //一番新しいところに描画位置(ビーム始点からかがみまで)を収納
         line_RedererPos_List.Add(new List<Vector3>());
@@ -718,7 +722,7 @@ public class BeamComponent : MonoBehaviour
 
         var objCenter_hitPosVector = hitPos - hitObj.transform.position;
 
-        var direction_hitPoshitPosAngle = Vector3.Angle(objCenter_hitPosVector, -rayDirectionPos);
+        var direction_hitPoshitPosAngle = Vector3.Angle(objCenter_hitPosVector, -rayDirection);
 
         var hitPos_ObjCenterAngle= Mathf.Atan2(-objCenter_hitPosVector.x,-objCenter_hitPosVector.y) * Mathf.Rad2Deg;
 
