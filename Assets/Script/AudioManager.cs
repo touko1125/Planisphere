@@ -30,6 +30,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         AudioSources[0].volume = volumeBGM;
         AudioSources[1].volume = volumeSE;
 
+        //BGMの再生
         PlayAudio(AudioClips[4], AudioSources[0], 0.4f, true);
     }
 

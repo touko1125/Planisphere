@@ -57,20 +57,6 @@ namespace StoryClass
             message_BackGroudSprite = Resources.Load<Sprite>("Sprite/"+message_BackGround);
 
             message_PersonSprite = Resources.Load<Sprite>("Sprite/"+message_Person);
-
-            //Debug.Log(message_Num);
-
-            //Debug.Log(message_String);
-
-            //Debug.Log(message_Person);
-
-            //Debug.Log(message_BackGround);
-
-            //Debug.Log(message_PersonPos);
-
-            //Debug.Log(message_BackGroudSprite);
-
-            //Debug.Log(message_PersonSprite);
         }
     }
 }

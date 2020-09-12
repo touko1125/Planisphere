@@ -39,6 +39,7 @@ public class InputManager :SingletonMonoBehaviour<InputManager>
             if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
                 previousTapPos = Input.GetTouch(0).position;
+                tapinfo = new Tap(true, ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
             }
             //押している間
             if (Input.GetTouch(0).phase == TouchPhase.Moved)

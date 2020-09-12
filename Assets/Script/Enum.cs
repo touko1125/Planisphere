@@ -7,7 +7,8 @@
         BlackHoleSafe,
         BlackHoleOut,
         Asteroid,
-        Range
+        Range,
+        TwicePlanet
     }
 
     public enum PlanetFace
