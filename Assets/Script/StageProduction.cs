@@ -137,7 +137,7 @@ public class StageProduction : MonoBehaviour
                 DOTween.ToAlpha(() => img.color,
                                 x => img.color = x,
                                 state,
-                                time).OnComplete(() => Debug.Log("a"));
+                                time);
             }
             if (HasComponent<TextMeshProUGUI>(objects[i]))
             {
@@ -147,7 +147,7 @@ public class StageProduction : MonoBehaviour
                 DOTween.ToAlpha(() => text.color,
                                 x => text.color = x,
                                 state,
-                                time).OnComplete(() => Debug.Log("b"));
+                                time);
             }
         }
     }

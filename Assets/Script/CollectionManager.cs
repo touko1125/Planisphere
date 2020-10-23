@@ -93,8 +93,6 @@ public class CollectionManager : MonoBehaviour
     {
         collectionStr = buttonObj.name;
 
-        Debug.Log(collectionStr);
-
         if (isPop) return;
 
         if (!isClearBeforeStage(collectionStr)) return;
@@ -258,7 +256,7 @@ public class CollectionManager : MonoBehaviour
     public IEnumerator PopDownCollectionScreen()
     {
 
-        for(int i = 2; i < 4; i++)
+        for(int i = Const.collectionUITextFirstArray; i < Const.collectionUITextEndArray; i++)
         {
             var text = popScreenChildImage[i].GetComponent<TextMeshProUGUI>();
 
@@ -268,7 +266,7 @@ public class CollectionManager : MonoBehaviour
            , 0.2f);
         }
 
-        for (int i = 4; i < 7; i++)
+        for (int i = Const.collectionUIImageFirstArray; i < Const.collectionUIImageEndArray; i++)
         {
             var img = popScreenChildImage[i].GetComponent<Image>();
 
@@ -339,7 +337,7 @@ public class CollectionManager : MonoBehaviour
 
         popScreenChildImage[3].GetComponent<TextMeshProUGUI>().text = CSVReader.Instance.getCollectionExplanation(getStageNum(collectionStr));
 
-        for (int i = 2; i < 4; i++)
+        for (int i = Const.collectionUITextFirstArray; i < Const.collectionUITextEndArray; i++)
         {
             var text = popScreenChildImage[i].GetComponent<TextMeshProUGUI>();
 
@@ -349,7 +347,7 @@ public class CollectionManager : MonoBehaviour
            , 0.2f);
         }
 
-        for (int i = 4; i < 7; i++)
+        for (int i = Const.collectionUIImageFirstArray; i < Const.collectionUIImageEndArray; i++)
         {
             var img = popScreenChildImage[i].GetComponent<Image>();
 

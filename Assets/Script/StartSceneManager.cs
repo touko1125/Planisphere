@@ -81,7 +81,7 @@ public class StartSceneManager : MonoBehaviour
 
         while (!async.isDone)
         {
-            LoadPlanetImage[0].transform.rotation = Quaternion.Euler(0, 0, 360 * async.progress);
+            LoadPlanetImage[0].transform.rotation = Quaternion.Euler(0, 0, Const.degAngle360 * async.progress);
             yield return null;
         }
     }

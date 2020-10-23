@@ -58,22 +58,6 @@ public static class PlayerPrefsUtility
         PlayerPrefs.SetString(key, serializedListString);
     }
 
-    /// <summary>
-    /// ディクショナリーを保存
-    /// </summary>
-    public static void SaveDict<Key, Value>(string key, Dictionary<Key, Value> value)
-    {
-        string serizlizedDict = Serialize<Dictionary<Key, Value>>(value);
-        PlayerPrefs.SetString(key, serizlizedDict);
-    }
-
-    //=================================================================================
-    //読み込み
-    //=================================================================================
-
-    /// <summary>
-    /// リストを読み込み
-    /// </summary>
     public static List<T> LoadList<T>(string key)
     {
         //keyがある時だけ読み込む
@@ -122,25 +106,6 @@ public static class PlayerPrefsUtility
 
         return defaultMultiDimensionalList;
     }
-
-    /// <summary>
-    /// ディクショナリーを読み込み
-    /// </summary>
-    public static Dictionary<Key, Value> LoadDict<Key, Value>(string key)
-    {
-        //keyがある時だけ読み込む
-        if (PlayerPrefs.HasKey(key))
-        {
-            string serizlizedDict = PlayerPrefs.GetString(key);
-            return Deserialize<Dictionary<Key, Value>>(serizlizedDict);
-        }
-
-        return new Dictionary<Key, Value>();
-    }
-
-    //=================================================================================
-    //シリアライズ、デシリアライズ
-    //=================================================================================
 
     private static string SerializeVector2<T>(T vec)
     {

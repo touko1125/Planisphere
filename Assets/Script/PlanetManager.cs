@@ -127,8 +127,6 @@ public class PlanetManager : MonoBehaviour
 
             var lineMaterial = lineRendererObjects[i].GetComponent<LineRenderer>().material;
 
-            Debug.Log(lineMaterial.color.a);
-
             //LIneの表示
             DOTween.ToAlpha(() => lineMaterial.color,
                             color => lineMaterial.color = color,

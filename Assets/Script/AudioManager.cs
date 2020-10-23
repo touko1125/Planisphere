@@ -31,7 +31,7 @@ public class AudioManager : SingletonMonoBehaviour<AudioManager>
         AudioSources[1].volume = volumeSE;
 
         //BGMの再生
-        PlayAudio(AudioClips[4], AudioSources[0], 0.4f, true);
+        PlayAudio(AudioClips[4], AudioSources[0], volumeBGM, true);
     }
 
     // Update is called once per frame

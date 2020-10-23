@@ -81,7 +81,6 @@ public class StageSelectManager : MonoBehaviour
 
     public IEnumerator FillStageImage()
     {
-        Debug.Log("aa");
         for(int i = 0; i < stageSprites.Count; i++)
         {
             if (i > GameManager.Instance.clearStageNum) yield break;
@@ -92,8 +91,6 @@ public class StageSelectManager : MonoBehaviour
                       ,(x) => stageSprites[j].transform.Find("Planet").Find("Cover").gameObject.GetComponent<Image>().fillAmount = x
                       ,1.0f, 0.9f);
         }
-
-        Debug.Log("ii");
     }
 
     public void RotateStagePanel(Tap tapInfo)
@@ -142,12 +139,6 @@ public class StageSelectManager : MonoBehaviour
     public void PressStage(GameObject buttonObj)
     {
         NextSceneStr = buttonObj.name;
-
-        if (!isClearBeforeStage(NextSceneStr))
-        {
-            Debug.Log("すすめへんでー!");
-            return;
-        }
 
         StartCoroutine(SceneTransition());
     }

@@ -19,8 +19,8 @@ public class HomeManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        stageSelectObj = canvas.transform.Find("StageSelect").gameObject;
-        collectionObj = canvas.transform.Find("Collection").gameObject;
+        stageSelectObj = canvas.transform.Find(Const.StageSelectStageStr).gameObject;
+        collectionObj = canvas.transform.Find(Const.CollectionStageStr).gameObject;
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class HomeManager : MonoBehaviour
 
         if (getTapInfo().tap_Obj == null) return;
 
-        if (getTapInfo().tap_Obj.name != "Collection" && getTapInfo().tap_Obj.name != "StageSelect") return;
+        if (getTapInfo().tap_Obj.name != Const.CollectionStageStr && getTapInfo().tap_Obj.name != Const.StageSelectStageStr) return;
 
         if (isDisplayAnotherScene) return;
 

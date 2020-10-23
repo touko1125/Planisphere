@@ -81,7 +81,7 @@ public class PanelMoveManagement : MonoBehaviour
         isCorrecting = true;
 
         //効果音再生
-        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[1], AudioManager.Instance.AudioSources[1], Const.volume_SE, false);
+        AudioManager.Instance.PlayAudio(AudioManager.Instance.AudioClips[1], AudioManager.Instance.AudioSources[1],AudioManager.Instance.volumeSE, false);
 
         //角度分だけ回し続ける
         tabObj.transform.parent.DOLocalRotate(

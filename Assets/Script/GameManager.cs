@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using System.IO;
 using System.Text;
 using System;
@@ -39,8 +38,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public void UnloadScene(string sceneName)
     {
-        Debug.Log("aaaa");
-
         Application.UnloadLevel(sceneName);
         Resources.UnloadUnusedAssets();
     }

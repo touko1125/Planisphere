@@ -148,9 +148,6 @@ public class BeamComponent : MonoBehaviour
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(beemOriginPos);
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(directionPos);
 
-        //Scene画面に描画
-        Debug.DrawRay(beemRay.origin,beemRay.direction*Const.radius, Color.white,directionPos.magnitude);
-
         //ぶつかった奴を格納
         var rayHitObj=new List<GameObject>();
         //ぶつかった場所を格納
@@ -453,8 +450,6 @@ public class BeamComponent : MonoBehaviour
                         //二回呼び出してたら二回lineRendererリストに追加されてたからくっしょん
                         var mirrorAngle = getMirrorAngleCalculation(hitObjects[i], hitPos[i], raystartPos, rayDirection);
 
-                        Debug.Log("Bend");
-
                         isBendLine = true;
 
                         nextSetBeamPos[0] = mirrorAngle[0];
@@ -485,7 +480,6 @@ public class BeamComponent : MonoBehaviour
                         {
                             if (!isBendLine)
                             {
-                                Debug.Log("Bend");
 
                                 is_Reflected = false;
 
@@ -501,8 +495,6 @@ public class BeamComponent : MonoBehaviour
                         if (!isBendLine)
                         {
                             isBendLine = true;
-
-                            Debug.Log("Bend");
 
                             //終点を障害物の位置に
                             nextSetBeamPos[1] = hitPos[i] - raystartPos;
@@ -546,8 +538,6 @@ public class BeamComponent : MonoBehaviour
 
             StartCoroutine(shot_beam_coroutine);
         }
-
-        Debug.Log("aaaa");
 
         yield return new WaitForSeconds(0);
     }
@@ -604,8 +594,6 @@ public class BeamComponent : MonoBehaviour
 
         var firstRad = Mathf.Atan2((hitObj.transform.position-hitPos).x, (hitObj.transform.position-hitPos).y);
 
-        Debug.Log(firstRad*Mathf.Rad2Deg);
-
         //z軸の調整
         var prePos = new Vector3(hitPos.x,hitPos.y,Const.rayDepth);
         var centerPos = new Vector3(hitObj.transform.position.x,hitObj.transform.position.y,0);
@@ -615,7 +603,7 @@ public class BeamComponent : MonoBehaviour
 
         for(int i = 0; i < Const.cireclePersantage+1; i++)
         {
-            var rad = Mathf.Deg2Rad*(i * (360 / Const.cireclePersantage));
+            var rad = Mathf.Deg2Rad*(i * (Const.degAngle360 / Const.cireclePersantage));
 
             var newPos = centerPos + new Vector3(-Mathf.Sin(rad+firstRad), -Mathf.Cos(rad+firstRad))*hitObj.GetComponent<PlanetComponent>().angle;
 
@@ -626,7 +614,7 @@ public class BeamComponent : MonoBehaviour
                 bombedLine.Add(new List<Vector3>());
 
                 bombedLine[bombedLine.Count - 1].Add(prePos);
-                bombedLine[bombedLine.Count - 1].Add((newPos - prePos) * (1/ hitObj.GetComponent<PlanetComponent>().angle)*1.5f);
+                bombedLine[bombedLine.Count - 1].Add((newPos - prePos) * (1/ hitObj.GetComponent<PlanetComponent>().angle)*Const.bombedLinePersentage);
             }
 
             prePos = newPos;
@@ -654,8 +642,6 @@ public class BeamComponent : MonoBehaviour
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(rayStartPos);
         line_RedererPos_List[line_RedererPos_List.Count - 1].Add(hitPos - rayStartPos);
 
-        Debug.Log(line_RedererPos_List[line_RedererPos_List.Count - 1][1]);
-
         var currentAngle = Mathf.Atan2((hitPos - rayStartPos).x, (hitPos - rayStartPos).y) * Mathf.Rad2Deg;
 
         var planetCount = hitObj.GetComponent<PlanetComponent>().planetCount;
@@ -670,13 +656,13 @@ public class BeamComponent : MonoBehaviour
         {
             var angleValue = hitObj.GetComponent<PlanetComponent>().angle * (i + 1);
 
-            var angleRight = 90 - currentAngle + angleValue;
+            var angleRight = Const.degAngle90 - currentAngle + angleValue;
 
-            var angleLeft = 90 - currentAngle - angleValue;
+            var angleLeft = Const.degAngle90 - currentAngle - angleValue;
 
-            var rightVector = new Vector3(Mathf.Cos(angleRight * Mathf.Deg2Rad), Mathf.Sin(angleRight * Mathf.Deg2Rad), 0) * 6f;
+            var rightVector = new Vector3(Mathf.Cos(angleRight * Mathf.Deg2Rad), Mathf.Sin(angleRight * Mathf.Deg2Rad), 0) * Const.bendLinePersentage;
 
-            var leftVector = new Vector3(Mathf.Cos(angleLeft * Mathf.Deg2Rad), Mathf.Sin(angleLeft * Mathf.Deg2Rad), 0) * 6f;
+            var leftVector = new Vector3(Mathf.Cos(angleLeft * Mathf.Deg2Rad), Mathf.Sin(angleLeft * Mathf.Deg2Rad), 0) * Const.bendLinePersentage;
 
             bendTestLine.Add(new List<Vector3>());
 
@@ -732,10 +718,10 @@ public class BeamComponent : MonoBehaviour
         var angleValue = hitObj.GetComponent<PlanetComponent>().angle;
 
         //超苦肉の策　ビーム射出地点から離れた方向に曲がる
-        var reflectPos = Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((90-(hitPos_ObjCenterAngle+angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90-(hitPos_ObjCenterAngle+angleValue)) * Mathf.Deg2Rad), 0) * 0.15f,rayStartPos)
-            > Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.15f, rayStartPos)
-            ? hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), 0) * 0.15f
-            : hitObj.transform.position + new Vector3(Mathf.Cos((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.15f;
+        var reflectPos = Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((Const.degAngle90-(hitPos_ObjCenterAngle+angleValue)) * Mathf.Deg2Rad), Mathf.Sin((Const.degAngle90 - (hitPos_ObjCenterAngle+angleValue)) * Mathf.Deg2Rad), 0) * 0.15f,rayStartPos)
+            > Vector3.Distance(hitObj.transform.position + new Vector3(Mathf.Cos((Const.degAngle90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((Const.degAngle90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.15f, rayStartPos)
+            ? hitObj.transform.position + new Vector3(Mathf.Cos((Const.degAngle90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), Mathf.Sin((Const.degAngle90 - (hitPos_ObjCenterAngle + angleValue)) * Mathf.Deg2Rad), 0) * 0.15f
+            : hitObj.transform.position + new Vector3(Mathf.Cos((Const.degAngle90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), Mathf.Sin((Const.degAngle90 - (hitPos_ObjCenterAngle - angleValue)) * Mathf.Deg2Rad), 0) * 0.15f;
 
         var directionNormarized = Vector3.Distance(new Vector3(-(reflectPos - hitObj.transform.position).y, (reflectPos - hitObj.transform.position).x).normalized*3f+reflectPos,rayStartPos)
             < Vector3.Distance(new Vector3((reflectPos - hitObj.transform.position).y,-(reflectPos - hitObj.transform.position).x).normalized * 3f + reflectPos, rayStartPos)

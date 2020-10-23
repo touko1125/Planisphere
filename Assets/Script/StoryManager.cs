@@ -56,10 +56,6 @@ public class StoryManager : MonoBehaviour
 
         story = new Story(storyNumbers.ToArray(),storyType,storyUnlockNumber);
 
-        Debug.Log(gameObject.name);
-
-        Debug.Log(gameObject.transform.childCount);
-
         storyObj = gameObject.transform.Find("StoryObj").gameObject;
 
         backGround = gameObject.transform.Find("StoryObj").Find("Back").gameObject.GetComponent<Image>();

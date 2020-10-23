@@ -61,8 +61,6 @@ public class PlanetComponent : MonoBehaviour
 
     public IEnumerator DevidePlanet()
     {
-        Debug.Log(AbleDevide());
-
         if (!AbleDevide()) yield break; ;
 
         //初回はPrefab用に取得

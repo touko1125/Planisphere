@@ -13,10 +13,6 @@ public abstract class SingletonMonoBehaviour<T> : MonoBehaviour where T : MonoBe
                 Type t = typeof(T);
 
                 instance = (T)FindObjectOfType(t);
-                if (instance == null)
-                {
-                    Debug.LogError(t + " をアタッチしているGameObjectはありません");
-                }
             }
 
             return instance;

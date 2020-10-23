@@ -51,16 +51,4 @@ public class MultiHitRay
             distance -= inMeshHit.distance;
         }
     }
-
-    //public static void CheckInnerObject(Collider2D hit, Vector3 currentPoint, Vector3 direction, float distance, List<Vector3> list)
-    //{
-    //    RaycastHit2D[] inMeshHit;
-
-    //    while (hit.Raycast(direction,inMeshHit, distance)>0)
-    //    {
-    //        list.Add(inMeshHit.point);
-    //        currentPoint = inMeshHit.point;
-    //        distance -= inMeshHit.distance;
-    //    }
-    //}
 }

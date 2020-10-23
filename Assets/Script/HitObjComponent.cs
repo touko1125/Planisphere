@@ -10,15 +10,5 @@ public class HitObjComponent : MonoBehaviour
 
     //これが鏡とブラックホールの時にだけ使う
     public GameObject pairObj;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

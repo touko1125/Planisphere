@@ -62,7 +62,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         CorrectionRotate(-tapObj.transform.parent.localEulerAngles.z, tapObj);
 
-        if (tapObj.tag == "CoverTab") return;
+        if (tapObj.tag == Const.coverTabStr) return;
 
         //線のリセット
         beamComponent.ThinAndDestroyLine(int.Parse(tapObj.name));
@@ -81,7 +81,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         controlCorrect = false;
 
-        if (tapObj.tag == "CoverTab") return;
+        if (tapObj.tag == Const.coverTabStr) return;
 
         BeamSet(latestAngle, panelMovement.TabNum);
     }
@@ -116,8 +116,6 @@ public class PanelBeamConnectPresenter : MonoBehaviour
                 break;
         }
 
-        Debug.Log("BeamShot!!");
-
         //コルーチンの設定(最初はタブから対角線)
         beamComponent.shot_beam_coroutine=beamComponent.ShotBeam(rayOrigin,direction*Const.radius,TabNum);
         StartCoroutine(beamComponent.shot_beam_coroutine);
@@ -142,7 +140,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         if (getTapInfo().tap_Obj == null) return;
 
-        if (getTapInfo().tap_Obj.tag != "Tab" && getTapInfo().tap_Obj.tag != "CoverTab")
+        if (getTapInfo().tap_Obj.tag != Const.tabStr && getTapInfo().tap_Obj.tag != Const.coverTabStr)
         {
             if (previousTapTab == null) return;
             panelMovement.RotateTab(getTapInfo(), previousTapTab);
@@ -151,7 +149,7 @@ public class PanelBeamConnectPresenter : MonoBehaviour
 
         tapTab = getTapInfo().tap_Obj;
 
-        if (tapTab.tag == "Tab" || getTapInfo().tap_Obj.tag == "CoverTab")
+        if (tapTab.tag == Const.tabStr || getTapInfo().tap_Obj.tag == Const.coverTabStr)
         {
             if (previousTapTab != null)
             {
