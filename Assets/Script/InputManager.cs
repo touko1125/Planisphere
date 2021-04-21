@@ -35,12 +35,10 @@ public class InputManager :SingletonMonoBehaviour<InputManager>
         //タッチされているかのチェック(Application上)
         if (Input.touchCount > 0)
         {
-            //押した瞬間
             if (Input.GetTouch(0).phase == TouchPhase.Began)
             {
                 previousTapPos = Input.GetTouch(0).position;
-                tapinfo = new Tap(true, ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);
-            }
+                tapinfo = new Tap(true, ChangeScreenPosIntoWorldPos(previousTapPos), ChangeScreenPosIntoWorldPos(Input.GetTouch(0).position), tapObj);            }
             //押している間
             if (Input.GetTouch(0).phase == TouchPhase.Moved)
             {

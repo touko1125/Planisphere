@@ -19,6 +19,17 @@ public class BeamComponent : MonoBehaviour
 
     public List<GameObject> currentBeamHitObjects = new List<GameObject>();
 
+    [System.SerializableAttribute]
+    public class ValueList
+    {
+        public List<GameObject> gameObjectlist = new List<GameObject>();
+
+        public ValueList(List<GameObject> gameObjectList)
+        {
+            gameObjectList = gameObjectlist;
+        }
+    }
+
     private List<List<GameObject>> currentBeamPlanetObjects = new List<List<GameObject>>();
 
     private List<List<GameObject>> beforeLineRendererObjects = new List<List<GameObject>>();
@@ -90,13 +101,36 @@ public class BeamComponent : MonoBehaviour
     //今貫かれている星のうち今から引かれる線を出していたつまみによって貫かれていたものは状態のリセット
     public void RestPlanetState(int TabNum)
     {
-        for(int i=0;i < currentBeamPlanetObjects[TabNum].Count; i++)
+        int AnotherTabNum = TabNum == 0 ? 1 : 0;
+
+        List<GameObject> duplicateObj = new List<GameObject>();
+
+        for(int i=0;i < currentBeamPlanetObjects[AnotherTabNum].Count; i++)
         {
-            currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.nomal);
-            if (currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().planetMode == Enum.PlanetMode.TwicePlanet) currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().planetCount++;
+            for(int n=0;n < currentBeamPlanetObjects[TabNum].Count; n++)
+            {
+                if(currentBeamPlanetObjects[TabNum][n]==currentBeamPlanetObjects[AnotherTabNum][i])
+                {
+                    duplicateObj.Add(currentBeamPlanetObjects[TabNum][n]);
+                }
+            }
         }
 
-        currentBeamPlanetObjects[TabNum].Clear();
+        for(int i=0;i<duplicateObj.Count;i++)
+        {
+            currentBeamPlanetObjects[TabNum].Remove(duplicateObj[i]);
+        }
+
+        if(currentBeamPlanetObjects[TabNum].Count>0)
+        {
+            for(int i=0;i < currentBeamPlanetObjects[TabNum].Count; i++)
+            {
+                currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().ChangeFace(Enum.PlanetFace.nomal);
+                if (currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().planetMode == Enum.PlanetMode.TwicePlanet) currentBeamPlanetObjects[TabNum][i].GetComponent<PlanetComponent>().planetCount++;
+            }
+
+            currentBeamPlanetObjects[TabNum].Clear();
+        }
     }
 
     public void ResetLine()

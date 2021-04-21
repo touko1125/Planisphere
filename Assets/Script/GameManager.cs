@@ -39,6 +39,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public void UnloadScene(string sceneName)
     {
         Application.UnloadLevel(sceneName);
+        
         Resources.UnloadUnusedAssets();
     }
 

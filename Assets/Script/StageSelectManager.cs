@@ -140,6 +140,8 @@ public class StageSelectManager : MonoBehaviour
     {
         NextSceneStr = buttonObj.name;
 
+        if(!isClearBeforeStage(NextSceneStr)) return;
+
         StartCoroutine(SceneTransition());
     }
 

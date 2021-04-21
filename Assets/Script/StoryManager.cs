@@ -35,6 +35,8 @@ public class StoryManager : MonoBehaviour
 
     private bool isSetStory;
 
+    private bool isPlayedStory;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -168,6 +170,12 @@ public class StoryManager : MonoBehaviour
         storyObj.SetActive(false);
 
         yield return new WaitForSeconds(0.5f);
+
+        if(story.unlock_StoryStageNum==46)
+        {
+            GameManager.Instance.clearStageNum=47;
+            GameManager.Instance.SaveClearStageNum();
+        } 
 
         GameManager.Instance.isPauseGame = false;
     }
